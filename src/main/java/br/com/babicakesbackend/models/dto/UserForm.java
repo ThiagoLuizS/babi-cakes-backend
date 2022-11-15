@@ -20,6 +20,8 @@ public class UserForm {
     private String name;
     @NotNull(message = "Informe seu email")
     private String email;
+    @NotNull(message = "Informe uma senha")
+    private String password;
     @NotNull(message = "Informe sua data de nascimento")
     private Date birthday;
     @NotNull(message = "Informe um telefone celular válido")

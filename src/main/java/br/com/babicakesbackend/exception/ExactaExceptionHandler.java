@@ -34,7 +34,7 @@ public class ExactaExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .path(request.getServletPath())
                 .error(HttpStatus.NOT_FOUND.name())
-                .message(Arrays.asList(notFoundException.getMessage())).build();
+                .messages(Arrays.asList(notFoundException.getMessage())).build();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ExactaExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorView.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .path(bindingResult.getNestedPath())
-                .message(bindingResult.getFieldErrors().stream().map(error -> messageSource.getMessage(error, LocaleContextHolder.getLocale())).collect(Collectors.toList()))
+                .messages(bindingResult.getFieldErrors().stream().map(error -> messageSource.getMessage(error, LocaleContextHolder.getLocale())).collect(Collectors.toList()))
                 .error(HttpStatus.BAD_REQUEST.name()).build();
     }
 
@@ -56,7 +56,7 @@ public class ExactaExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorView.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .path("/api/auth")
-                .message(Arrays.asList("Não foi possivel autenticar a requisição, verifique se o token está correto!"))
+                .messages(Arrays.asList("Não foi possivel autenticar a requisição, verifique se o token está correto!"))
                 .error(HttpStatus.UNAUTHORIZED.name()).build();
     }
 

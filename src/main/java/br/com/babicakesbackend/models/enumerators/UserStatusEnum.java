@@ -23,4 +23,8 @@ public enum UserStatusEnum {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public boolean isActive() {
+        return ACTIVE.equals(this);
+    }
 }

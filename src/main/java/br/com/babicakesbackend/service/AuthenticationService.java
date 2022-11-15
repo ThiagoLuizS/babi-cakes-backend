@@ -34,7 +34,7 @@ public class AuthenticationService {
 		if (!entity.isPresent()) {
 			throw new NotFoundException("Usuário não existe");
 		}
-		if(!UserStatusEnum.ACTIVE.equals(entity.get().getStatus())){
+		if(!entity.get().isEnabled()){
 			throw new NotFoundException("Usuário não está ativo");
 		}
 		Authentication auth = authenticationManager.authenticate(

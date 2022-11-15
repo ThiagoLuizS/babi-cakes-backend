@@ -19,5 +19,5 @@ public class ErrorView {
     private String path;
     private Integer status;
     private String error;
-    private List<String> message;
+    private List<String> messages;
 }

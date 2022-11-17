@@ -18,20 +18,16 @@ public abstract class AbstractService<T, View, Form> {
 
     protected abstract MapStructMapper<T, View, Form> getConverter();
 
-    public View findById(Long id) {
+    public Optional<View> findById(Long id) {
         log.info("findById [id={}]", id);
         Optional<T> view = getRepository().findById(id);
         log.info("findById [view={}]", view);
-        return view.map(getConverter()::entityToView)
-                .orElseThrow(() -> new NotFoundException(ConstantsMessageUtils.NOT_FOUND));
+        return view.map(getConverter()::entityToView);
     }
 
     public List<View> findAll() {
         List<T> views = getRepository().findAll();
         log.info("findAll [views={}]", views.stream().count());
-        if(CollectionUtils.isEmpty(views)){
-            throw new NotFoundException(ConstantsMessageUtils.NOT_FOUND);
-        }
         return views.stream().map(getConverter()::entityToView).collect(Collectors.toList());
     }
 

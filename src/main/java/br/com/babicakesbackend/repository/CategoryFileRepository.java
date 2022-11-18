@@ -1,10 +1,9 @@
 package br.com.babicakesbackend.repository;
 
-import br.com.babicakesbackend.models.entity.Category;
+import br.com.babicakesbackend.models.entity.CategoryFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
-
+public interface CategoryFileRepository extends JpaRepository<CategoryFile, Long> {
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,9 +29,6 @@ public class CategoryFile {
     @Column(name = "id_file")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(mappedBy = "categoryFile", fetch = FetchType.LAZY)
-    private Category category;
 
     @Column(name = "file_name")
     private String name;

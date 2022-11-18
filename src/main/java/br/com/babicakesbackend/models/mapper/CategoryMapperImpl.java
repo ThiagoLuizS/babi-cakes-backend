@@ -30,4 +30,9 @@ public class CategoryMapperImpl implements MapStructMapper<Category, CategoryVie
                 .description(categoryForm.getDescription())
                 .build();
     }
+
+    @Override
+    public CategoryForm viewToForm(CategoryView categoryView) {
+        return null;
+    }
 }

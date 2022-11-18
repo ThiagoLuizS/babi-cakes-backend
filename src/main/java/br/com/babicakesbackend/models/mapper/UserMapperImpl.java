@@ -27,4 +27,9 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .birthday(userForm.getBirthday())
                 .build();
     }
+
+    @Override
+    public UserForm viewToForm(UserView userView) {
+        return null;
+    }
 }

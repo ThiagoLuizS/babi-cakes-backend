@@ -4,15 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Base64;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryForm {
+public class ProductFileView {
     private Long id;
-    private CategoryFileForm categoryFileForm;
     private String name;
-    private String description;
+    private String type;
+    private byte[] photo;
+    private String photoBase64ToString;
+
+    public String getPhotoBase64ToString() {
+        return Base64.getEncoder().encodeToString(photo);
+    }
 }

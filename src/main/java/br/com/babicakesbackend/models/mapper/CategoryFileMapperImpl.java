@@ -26,4 +26,14 @@ public class CategoryFileMapperImpl implements MapStructMapper<CategoryFile, Cat
                 .photo(categoryFileForm.getPhoto())
                 .build();
     }
+
+    @Override
+    public CategoryFileForm viewToForm(CategoryFileView categoryFileView) {
+        return CategoryFileForm.builder()
+                .id(categoryFileView.getId())
+                .name(categoryFileView.getName())
+                .type(categoryFileView.getType())
+                .photo(categoryFileView.getPhoto())
+                .build();
+    }
 }

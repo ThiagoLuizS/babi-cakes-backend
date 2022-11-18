@@ -5,6 +5,9 @@ import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.util.ConstantsMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -19,10 +22,16 @@ public abstract class AbstractService<T, View, Form> {
     protected abstract MapStructMapper<T, View, Form> getConverter();
 
     public Optional<View> findById(Long id) {
-        log.info("findById [id={}]", id);
+        log.info(">> findById [id={}]", id);
         Optional<T> view = getRepository().findById(id);
-        log.info("findById [view={}]", view);
+        log.info("<< findById [view={}]", view);
         return view.map(getConverter()::entityToView);
+    }
+
+    public Page<View> findByPage(Pageable pageable) {
+        Page<T> t = getRepository().findAll(pageable);
+        List<View> view = t.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
+        return new PageImpl<>(view);
     }
 
     public List<View> findAll() {

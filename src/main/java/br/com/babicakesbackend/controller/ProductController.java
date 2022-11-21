@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.controller;
 
 import br.com.babicakesbackend.models.dto.CategoryView;
+import br.com.babicakesbackend.models.dto.ProductView;
 import br.com.babicakesbackend.resource.ProductResource;
 import br.com.babicakesbackend.service.ProductService;
 import io.swagger.annotations.Api;
@@ -25,7 +26,7 @@ public class ProductController implements ProductResource {
     }
 
     @Override
-    public Page<CategoryView> getAllByPageAndCategory(Pageable pageable, Long categoryId) {
-        return null;
+    public Page<ProductView> getAllByPageAndCategory(Pageable pageable, Long categoryId, String productName) {
+        return service.findAllByCategoryId(categoryId, pageable, productName);
     }
 }

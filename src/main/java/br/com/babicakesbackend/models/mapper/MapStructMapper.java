@@ -6,9 +6,7 @@ import org.mapstruct.Mapper;
 public interface MapStructMapper<T, View, Form> {
 
     View entityToView(T t);
-
     T formToEntity(Form form);
-
     Form viewToForm(View view);
-
+    Form entityToForm(T t);
 }

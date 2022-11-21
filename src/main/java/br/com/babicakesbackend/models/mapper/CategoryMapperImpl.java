@@ -18,6 +18,7 @@ public class CategoryMapperImpl implements MapStructMapper<Category, CategoryVie
                 .categoryFileView(categoryFileMapper.entityToView(category.getCategoryFile()))
                 .name(category.getName())
                 .description(category.getDescription())
+                .show(category.isShow())
                 .build();
     }
 
@@ -28,11 +29,29 @@ public class CategoryMapperImpl implements MapStructMapper<Category, CategoryVie
                 .categoryFile(categoryFileMapper.formToEntity(categoryForm.getCategoryFileForm()))
                 .name(categoryForm.getName())
                 .description(categoryForm.getDescription())
+                .show(categoryForm.isShow())
                 .build();
     }
 
     @Override
     public CategoryForm viewToForm(CategoryView categoryView) {
-        return null;
+        return CategoryForm.builder()
+                .id(categoryView.getId())
+                .categoryFileForm(categoryFileMapper.viewToForm(categoryView.getCategoryFileView()))
+                .name(categoryView.getName())
+                .description(categoryView.getDescription())
+                .show(categoryView.isShow())
+                .build();
+    }
+
+    @Override
+    public CategoryForm entityToForm(Category category) {
+        return CategoryForm.builder()
+                .id(category.getId())
+                .categoryFileForm(categoryFileMapper.entityToForm(category.getCategoryFile()))
+                .name(category.getName())
+                .description(category.getDescription())
+                .show(category.isShow())
+                .build();
     }
 }

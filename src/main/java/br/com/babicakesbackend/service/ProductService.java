@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.service;
 
+import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.CategoryFileForm;
 import br.com.babicakesbackend.models.dto.CategoryFileView;
 import br.com.babicakesbackend.models.dto.CategoryForm;
@@ -15,11 +16,18 @@ import br.com.babicakesbackend.repository.ProductRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,15 +37,29 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
 
     private final ProductRepository repository;
     private final ProductMapperImpl productMapper;
-
     private final ProductFileService productFileService;
-
     private final ProductFileMapperImpl productFileMapper;
+    private final CategoryService categoryService;
+
 
     public void saveCustom(String productFormJson,  MultipartFile file) throws Exception {
         try {
 
             ProductForm productForm = new Gson().fromJson(productFormJson, ProductForm.class);
+
+            if(productForm.getPercentageValue().compareTo(new BigDecimal(100)) > 0) {
+                throw new GlobalException("Desconto por porcentagem maior que o permitido");
+            } else if (productForm.getPercentageValue().compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
+                discountValue = productForm.getValue().subtract(discountValue);
+                productForm.setDiscountValue(discountValue);
+            }
+
+            CategoryForm categoryForm = categoryService.findCategoryFormById(productForm.getCategoryId());
+
+            if(repository.existsByCode(productForm.getCode())) {
+                throw new GlobalException("Código do produto já existe");
+            }
 
             ProductFileForm productFileForm = ProductFileForm.builder()
                     .name(file.getOriginalFilename())
@@ -48,12 +70,22 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
             ProductFileView fileView = productFileService.save(productFileForm);
             productFileForm = productFileMapper.viewToForm(fileView);
             productForm.setProductFileForm(productFileForm);
+            productForm.setCategoryForm(categoryForm);
+
             save(productForm);
 
         } catch (Exception e) {
             log.error("<< Error [error={}]", e.getMessage());
-            throw new Exception("Falha ao salvar a categoria");
+            throw new Exception(e.getMessage());
         }
+    }
+
+    public Page<ProductView> findAllByCategoryId(Long categoryId, Pageable pageable, String productName) {
+        log.info(">> findAllByCategoryId [categoryId={}, pageable={}]", categoryId, pageable);
+        Page<Product> products = repository.findAllByCategoryIdAndNameStartsWithIgnoreCase(categoryId, productName, pageable);
+        log.info("<< findAllByCategoryId [productsSize={}]", products.getContent().stream().count());
+        List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
+        return new PageImpl<>(view);
     }
 
     @Override

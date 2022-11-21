@@ -32,4 +32,9 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
     public UserForm viewToForm(UserView userView) {
         return null;
     }
+
+    @Override
+    public UserForm entityToForm(User user) {
+        return null;
+    }
 }

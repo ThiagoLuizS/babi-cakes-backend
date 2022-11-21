@@ -1,6 +1,6 @@
 package br.com.babicakesbackend.resource;
 
-import br.com.babicakesbackend.models.dto.CategoryView;
+import br.com.babicakesbackend.models.dto.ProductView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,5 +19,7 @@ public interface ProductResource {
               @RequestParam(name = "file") MultipartFile file) throws Exception;
 
     @GetMapping("/pageable/{categoryId}")
-    Page<CategoryView> getAllByPageAndCategory(Pageable pageable, @PathVariable(name = "categoryId") Long categoryId);
+    Page<ProductView> getAllByPageAndCategory(Pageable pageable,
+                                              @PathVariable(name = "categoryId") Long categoryId,
+                                              @RequestParam("productName") String productName);
 }

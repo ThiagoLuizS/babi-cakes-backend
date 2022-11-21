@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,13 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
             log.error("<< Error [error={}]", e.getMessage());
             throw new Exception("Falha ao salvar a categoria");
         }
+    }
+
+    public CategoryForm findCategoryFormById(Long id) {
+        log.info(">> findCategoryFormById [id={}]", id);
+        Optional<Category> category = repository.findById(id);
+        log.info("<< findCategoryFormById [data={}]", category.get().getId());
+        return categoryMapper.entityToForm(category.get());
     }
 
     @Override

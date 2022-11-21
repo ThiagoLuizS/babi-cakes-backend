@@ -36,4 +36,14 @@ public class ProductFileMapperImpl implements MapStructMapper<ProductFile, Produ
                 .photo(productFileView.getPhoto())
                 .build();
     }
+
+    @Override
+    public ProductFileForm entityToForm(ProductFile productFile) {
+        return ProductFileForm.builder()
+                .id(productFile.getId())
+                .name(productFile.getName())
+                .type(productFile.getType())
+                .photo(productFile.getPhoto())
+                .build();
+    }
 }

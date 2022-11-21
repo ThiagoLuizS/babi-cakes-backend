@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class ProductView {
     private Long id;
     private CategoryView categoryView;
-    private ProductFile productFile;
+    private ProductFileView productFileView;
     private Long code;
     private String name;
     private String description;
@@ -24,6 +24,5 @@ public class ProductView {
     private BigDecimal percentageValue;
     private Integer minimumOrder;
     private boolean existPercentage;
-    private String observation;
     private String tag;
 }

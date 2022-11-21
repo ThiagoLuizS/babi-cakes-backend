@@ -15,4 +15,5 @@ public class CategoryForm {
     private CategoryFileForm categoryFileForm;
     private String name;
     private String description;
+    private boolean show;
 }

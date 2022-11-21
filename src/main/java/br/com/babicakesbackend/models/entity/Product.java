@@ -38,7 +38,7 @@ public class Product {
     @JoinColumn(name = "id_file")
     private ProductFile productFile;
 
-    @Column(name = "product_codigo")
+    @Column(name = "product_code")
     private Long code;
 
     @Column(name = "product_name")
@@ -56,16 +56,13 @@ public class Product {
     @Column(name = "product_percentage_value")
     private BigDecimal percentageValue;
 
-    @Column(name = "product_minimunOrder")
+    @Column(name = "product_minimun_order")
     private Integer minimumOrder;
 
     @Column(name = "product_exist_percentage")
     private boolean existPercentage;
 
-    @Column(name = "product_observation")
-    private String observation;
-
-    @Column(name = "tag")
+    @Column(name = "product_tag")
     private String tag;
 
 }

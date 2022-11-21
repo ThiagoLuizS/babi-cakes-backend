@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.models.dto;
 
 import br.com.babicakesbackend.models.entity.ProductFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,15 +16,17 @@ import java.math.BigDecimal;
 public class ProductForm {
     private Long id;
     private Long categoryId;
+    @JsonIgnore
+    private CategoryForm categoryForm;
+    @JsonIgnore
     private ProductFileForm productFileForm;
     private Long code;
     private String name;
     private String description;
     private BigDecimal value;
+    @JsonIgnore
     private BigDecimal discountValue;
     private BigDecimal percentageValue;
     private Integer minimumOrder;
-    private boolean existPercentage;
-    private String observation;
     private String tag;
 }

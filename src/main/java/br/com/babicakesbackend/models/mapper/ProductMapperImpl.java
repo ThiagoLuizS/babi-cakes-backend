@@ -6,17 +6,23 @@ import br.com.babicakesbackend.models.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class ProductMapperImpl implements MapStructMapper<Product, ProductView, ProductForm>{
 
     @Autowired
     private CategoryMapperImpl categoryMapper;
 
+    @Autowired
+    private ProductFileMapperImpl productFileMapper;
+
     @Override
     public ProductView entityToView(Product product) {
         return ProductView.builder()
                 .id(product.getId())
                 .categoryView(categoryMapper.entityToView(product.getCategory()))
+                .productFileView(productFileMapper.entityToView(product.getProductFile()))
                 .code(product.getCode())
                 .name(product.getName())
                 .description(product.getDescription())
@@ -26,7 +32,6 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .percentageValue(product.getPercentageValue())
                 .minimumOrder(product.getMinimumOrder())
                 .existPercentage(product.isExistPercentage())
-                .observation(product.getObservation())
                 .build();
     }
 
@@ -34,6 +39,8 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
     public Product formToEntity(ProductForm productForm) {
         return Product.builder()
                 .id(productForm.getId())
+                .category(categoryMapper.formToEntity(productForm.getCategoryForm()))
+                .productFile(productFileMapper.formToEntity(productForm.getProductFileForm()))
                 .code(productForm.getCode())
                 .name(productForm.getName())
                 .description(productForm.getDescription())
@@ -42,8 +49,7 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .discountValue(productForm.getDiscountValue())
                 .percentageValue(productForm.getPercentageValue())
                 .minimumOrder(productForm.getMinimumOrder())
-                .existPercentage(productForm.isExistPercentage())
-                .observation(productForm.getObservation())
+                .existPercentage(productForm.getDiscountValue().compareTo(BigDecimal.ZERO) > 0)
                 .build();
     }
 
@@ -59,8 +65,22 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .discountValue(productView.getDiscountValue())
                 .percentageValue(productView.getPercentageValue())
                 .minimumOrder(productView.getMinimumOrder())
-                .existPercentage(productView.isExistPercentage())
-                .observation(productView.getObservation())
+                .build();
+    }
+
+    @Override
+    public ProductForm entityToForm(Product product) {
+        return ProductForm.builder()
+                .id(product.getId())
+                .categoryForm(categoryMapper.entityToForm(product.getCategory()))
+                .code(product.getCode())
+                .name(product.getName())
+                .description(product.getDescription())
+                .tag(product.getTag())
+                .value(product.getValue())
+                .discountValue(product.getDiscountValue())
+                .percentageValue(product.getPercentageValue())
+                .minimumOrder(product.getMinimumOrder())
                 .build();
     }
 }

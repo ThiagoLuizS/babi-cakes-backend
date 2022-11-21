@@ -37,6 +37,18 @@ public class ExactaExceptionHandler extends ResponseEntityExceptionHandler {
                 .messages(Arrays.asList(notFoundException.getMessage())).build();
     }
 
+    @ExceptionHandler({GlobalException.class})
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ErrorView handleGlobalException(
+            GlobalException globalException,
+            HttpServletRequest request) {
+        return ErrorView.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .path(request.getServletPath())
+                .error(HttpStatus.NOT_FOUND.name())
+                .messages(Arrays.asList(globalException.getMessage())).build();
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {

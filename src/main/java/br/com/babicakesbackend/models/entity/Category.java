@@ -40,4 +40,7 @@ public class Category {
     @Column(name = "category_description")
     private String description;
 
+    @Column(name = "category_show")
+    private boolean show;
+
 }

@@ -4,6 +4,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class ConstantUtils {
 
+	public static final String JWT_SUB_KEY = "sub";
+
 	private ConstantUtils() {}
 	
 	public static final int JWT_EXP_DAYS = 1;

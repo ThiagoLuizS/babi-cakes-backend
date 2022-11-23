@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryForm {
+public class BudgetProductReservedForm {
     private Long id;
-    private CategoryFileForm categoryFileForm;
-    private String name;
-    private String description;
-    private boolean show;
+    private Long productCode;
+    private Integer quantity;
 }

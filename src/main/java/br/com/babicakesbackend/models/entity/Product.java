@@ -30,11 +30,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_category")
     private Category category;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_file")
     private ProductFile productFile;
 
@@ -64,5 +64,8 @@ public class Product {
 
     @Column(name = "product_tag")
     private String tag;
+
+    @Column(name = "product_with_stock")
+    private boolean withStock;
 
 }

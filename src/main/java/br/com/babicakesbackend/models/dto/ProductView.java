@@ -25,4 +25,5 @@ public class ProductView {
     private Integer minimumOrder;
     private boolean existPercentage;
     private String tag;
+    private boolean withStock;
 }

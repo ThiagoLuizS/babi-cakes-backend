@@ -17,9 +17,10 @@ create table if not exists tb_product
     product_value            decimal(10, 2)                 not null,
     product_discount_value   decimal(10, 2)                 not null,
     product_percentage_value decimal(5, 4)                  not null,
-    product_minimun_order    int                            not null,
+    product_minimun_order    int                            not null default false,
     product_exist_percentage bool                           not null,
-    product_tag              varchar(100)                   not null
+    product_tag              varchar(100)                   not null,
+    product_with_stock       bool                           not null default false
 );
 
 alter table tb_product

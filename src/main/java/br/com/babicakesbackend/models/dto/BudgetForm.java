@@ -1,18 +1,19 @@
 package br.com.babicakesbackend.models.dto;
 
+import br.com.babicakesbackend.models.enumerators.BudgetStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryForm {
+public class BudgetForm {
     private Long id;
-    private CategoryFileForm categoryFileForm;
-    private String name;
-    private String description;
-    private boolean show;
+    private Long code;
+    private BudgetStatusEnum budgetStatusEnum;
 }

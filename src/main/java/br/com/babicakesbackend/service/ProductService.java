@@ -27,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,12 +49,15 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
 
             ProductForm productForm = new Gson().fromJson(productFormJson, ProductForm.class);
 
-            if(productForm.getPercentageValue().compareTo(new BigDecimal(100)) > 0) {
-                throw new GlobalException("Desconto por porcentagem maior que o permitido");
-            } else if (productForm.getPercentageValue().compareTo(BigDecimal.ZERO) > 0) {
-                BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
-                discountValue = productForm.getValue().subtract(discountValue);
-                productForm.setDiscountValue(discountValue);
+            if(Objects.nonNull(productForm.getPercentageValue())
+                    && productForm.getPercentageValue().compareTo(BigDecimal.ZERO) > 0) {
+                if(productForm.getPercentageValue().compareTo(new BigDecimal(100)) > 0) {
+                    throw new GlobalException("Desconto por porcentagem maior que o permitido");
+                } else {
+                    BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
+                    discountValue = productForm.getValue().subtract(discountValue);
+                    productForm.setDiscountValue(discountValue);
+                }
             }
 
             CategoryForm categoryForm = categoryService.findCategoryFormById(productForm.getCategoryId());
@@ -86,6 +91,20 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
         log.info("<< findAllByCategoryId [productsSize={}]", products.getContent().stream().count());
         List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
         return new PageImpl<>(view);
+    }
+
+    public Optional<Product> findById(Long id) {
+        log.info(">> findById [id={}]", id);
+        Optional<Product> product = repository.findById(id);
+        log.info("<< findById [product isPresent={}]", product.isPresent());
+        return product;
+    }
+
+    public Optional<Product> findByCode(Long code) {
+        log.info(">> findByCode [code={}]", code);
+        Optional<Product> product = repository.findByCode(code);
+        log.info("<< findByCode [product isPresent={}]", product.isPresent());
+        return product;
     }
 
     @Override

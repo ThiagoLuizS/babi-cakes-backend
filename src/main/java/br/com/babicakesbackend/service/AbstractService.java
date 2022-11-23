@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.service;
 
+import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.exception.NotFoundException;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.util.ConstantsMessageUtils;
@@ -21,11 +22,18 @@ public abstract class AbstractService<T, View, Form> {
 
     protected abstract MapStructMapper<T, View, Form> getConverter();
 
-    public Optional<View> findById(Long id) {
+    public Optional<View> findViewById(Long id) {
         log.info(">> findById [id={}]", id);
         Optional<T> view = getRepository().findById(id);
         log.info("<< findById [view={}]", view);
         return view.map(getConverter()::entityToView);
+    }
+
+    public Optional<T> findEntityById(Long id) {
+        log.info(">> findById [id={}]", id);
+        Optional<T> entity = getRepository().findById(id);
+        log.info("<< findById [view isPresent={}]", entity.isPresent());
+        return entity;
     }
 
     public Page<View> findByPage(Pageable pageable) {
@@ -41,14 +49,20 @@ public abstract class AbstractService<T, View, Form> {
     }
 
     public View save(Form form) {
-        log.debug(">> save [form={}] ", form);
-        T converting = getConverter().formToEntity(form);
-        log.debug(">> save [converting={}] ", converting);
-        T t = getRepository().save(converting);
-        log.debug("<< save [t={}] ", t);
-        View view =  getConverter().entityToView(t);
-        log.debug("<< save [view={}] ", view);
-        return view;
+        try {
+            log.debug(">> save [form={}] ", form);
+            T converting = getConverter().formToEntity(form);
+            log.debug(">> save [converting={}] ", converting);
+            T t = getRepository().save(converting);
+            log.debug("<< save [t={}] ", t);
+            View view =  getConverter().entityToView(t);
+            log.debug("<< save [view={}] ", view);
+            return view;
+        } catch (Exception e) {
+            log.error("<< save [error={}]", e.getMessage());
+            throw new GlobalException(e.getMessage());
+        }
+
     }
 
     public View update(Form form) {

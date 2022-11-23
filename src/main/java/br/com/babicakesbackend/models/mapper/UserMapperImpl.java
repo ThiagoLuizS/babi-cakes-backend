@@ -30,11 +30,22 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
 
     @Override
     public UserForm viewToForm(UserView userView) {
-        return null;
+        return UserForm.builder()
+                .id(userView.getId())
+                .name(userView.getName())
+                .email(userView.getEmail())
+                .birthday(userView.getBirthday())
+                .build();
     }
 
     @Override
     public UserForm entityToForm(User user) {
-        return null;
+        return UserForm.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .birthday(user.getBirthday())
+                .build();
     }
 }

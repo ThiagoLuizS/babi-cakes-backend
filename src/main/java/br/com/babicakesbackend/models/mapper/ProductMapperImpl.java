@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Component
 public class ProductMapperImpl implements MapStructMapper<Product, ProductView, ProductForm>{
@@ -32,6 +33,7 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .percentageValue(product.getPercentageValue())
                 .minimumOrder(product.getMinimumOrder())
                 .existPercentage(product.isExistPercentage())
+                .withStock(product.isWithStock())
                 .build();
     }
 
@@ -49,7 +51,8 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .discountValue(productForm.getDiscountValue())
                 .percentageValue(productForm.getPercentageValue())
                 .minimumOrder(productForm.getMinimumOrder())
-                .existPercentage(productForm.getDiscountValue().compareTo(BigDecimal.ZERO) > 0)
+                .existPercentage(Objects.nonNull(productForm.getDiscountValue()) && productForm.getDiscountValue().compareTo(BigDecimal.ZERO) > 0)
+                .withStock(productForm.isWithStock())
                 .build();
     }
 
@@ -65,6 +68,7 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .discountValue(productView.getDiscountValue())
                 .percentageValue(productView.getPercentageValue())
                 .minimumOrder(productView.getMinimumOrder())
+                .withStock(productView.isWithStock())
                 .build();
     }
 
@@ -73,6 +77,7 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
         return ProductForm.builder()
                 .id(product.getId())
                 .categoryForm(categoryMapper.entityToForm(product.getCategory()))
+                .productFileForm(productFileMapper.entityToForm(product.getProductFile()))
                 .code(product.getCode())
                 .name(product.getName())
                 .description(product.getDescription())
@@ -81,6 +86,7 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .discountValue(product.getDiscountValue())
                 .percentageValue(product.getPercentageValue())
                 .minimumOrder(product.getMinimumOrder())
+                .withStock(product.isWithStock())
                 .build();
     }
 }

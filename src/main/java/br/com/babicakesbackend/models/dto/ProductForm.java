@@ -23,10 +23,11 @@ public class ProductForm {
     private Long code;
     private String name;
     private String description;
-    private BigDecimal value;
+    private BigDecimal value = BigDecimal.ZERO;
     @JsonIgnore
-    private BigDecimal discountValue;
-    private BigDecimal percentageValue;
+    private BigDecimal discountValue = BigDecimal.ZERO;
+    private BigDecimal percentageValue = BigDecimal.ZERO;
     private Integer minimumOrder;
     private String tag;
+    private boolean withStock;
 }

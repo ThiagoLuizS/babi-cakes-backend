@@ -1,6 +1,9 @@
 package br.com.babicakesbackend.resource;
 
 import br.com.babicakesbackend.models.dto.InventoryForm;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,5 +17,10 @@ public interface InventoryResource {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Recurso responsavel por associar estoque a uma peça")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
     void save(@Valid @RequestBody InventoryForm inventoryForm);
 }

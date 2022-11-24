@@ -18,9 +18,5 @@ public interface InventoryResource {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Recurso responsavel por associar estoque a uma peça")
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
-            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
-    })
     void save(@Valid @RequestBody InventoryForm inventoryForm);
 }

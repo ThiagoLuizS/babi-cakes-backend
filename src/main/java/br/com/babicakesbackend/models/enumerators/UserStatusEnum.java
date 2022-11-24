@@ -4,7 +4,7 @@ import java.util.List;
 
 public enum UserStatusEnum {
 
-    ACTIVE("Ativo"), BLOCKED("Bloqueado"), CANCELED("Cancelado");
+    ACTIVE("Ativo"), BLOCKED("Bloqueado"), CANCELED("Cancelado"), ADMIN("Administrador");
 
     private String status;
 
@@ -26,5 +26,9 @@ public enum UserStatusEnum {
 
     public boolean isActive() {
         return ACTIVE.equals(this);
+    }
+
+    public boolean isAdmin() {
+        return ADMIN.equals(this);
     }
 }

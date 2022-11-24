@@ -81,7 +81,7 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
 
         } catch (Exception e) {
             log.error("<< Error [error={}]", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new GlobalException(e.getMessage());
         }
     }
 

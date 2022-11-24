@@ -42,6 +42,7 @@ public class AuthenticationService {
 			if(!entity.get().isEnabled()){
 				throw new NotFoundException("Usuário não está ativo");
 			}
+
 			Authentication auth = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(form.getEmail(), form.getPassword()));
 
@@ -49,6 +50,8 @@ public class AuthenticationService {
 
 			org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
 			String email = userDetails.getUsername();
+
+
 			List<String> roles = userDetails.getAuthorities()
 					.stream()
 					.map(authority -> authority.getAuthority())
@@ -59,6 +62,7 @@ public class AuthenticationService {
 					.name(entity.get().getName())
 					.phone(entity.get().getPhone())
 					.email(entity.get().getEmail())
+					.roles(roles)
 					.build();
 		} catch (Exception e) {
 			log.error("<< authenticationManagerSignJwt [error={}]", e.getMessage());

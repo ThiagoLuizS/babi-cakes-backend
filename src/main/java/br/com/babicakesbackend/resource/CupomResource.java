@@ -4,6 +4,7 @@ import br.com.babicakesbackend.models.dto.CupomForm;
 import br.com.babicakesbackend.models.entity.Cupom;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 
 public interface CupomResource {
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     void save(@Valid @RequestBody CupomForm cupomForm);

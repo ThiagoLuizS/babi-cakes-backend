@@ -50,6 +50,9 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
     }
 
     private Collection<? extends GrantedAuthority> getPermission(User user) {
-        return Arrays.asList(new SimpleGrantedAuthority("ALL"));
+        if(user.getStatus().isAdmin()) {
+            return Arrays.asList(new SimpleGrantedAuthority("ADMIN"));
+        }
+        return Arrays.asList(new SimpleGrantedAuthority("CLIENT"));
     }
 }

@@ -4,6 +4,7 @@ import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.BudgetForm;
 import br.com.babicakesbackend.models.dto.BudgetProductReservedForm;
 import br.com.babicakesbackend.models.dto.BudgetView;
+import br.com.babicakesbackend.models.entity.Address;
 import br.com.babicakesbackend.models.entity.Budget;
 import br.com.babicakesbackend.models.entity.BudgetProductReserved;
 import br.com.babicakesbackend.models.entity.Cupom;
@@ -19,6 +20,7 @@ import br.com.babicakesbackend.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +52,10 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
     private final BudgetProductReservedService budgetProductReservedService;
     private final CupomService cupomService;
     private final BudgetProductReservedMapperImpl budgetProductReservedMapper;
+    private final AddressService addressService;
+
+    @Value("${value.freightCost}")
+    private BigDecimal freightCost;
 
     public void createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
         try {
@@ -58,6 +64,12 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             User user = authenticationService.getUser(authorization);
 
             Optional<Budget> budgetSave = repository.findTop1ByOrderByCodeDesc();
+
+            Optional<Address> address = addressService.findByUserAndAddressMainIsTrue(user);
+
+            if(!address.isPresent()) {
+                throw new GlobalException("Não há endereço principal cadastrado");
+            }
 
             Budget budget = Budget.builder()
                     .code(budgetSave.isPresent() ? budgetSave.get().getCode() + 1 : 1)
@@ -82,6 +94,8 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
                     .map(this::calculatedProduct).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             budget.setAmount(amount);
+            budget.setFreightCost(freightCost);
+            budget.setAddress(address.get());
 
             repository.save(budget);
 
@@ -144,7 +158,9 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
     public BigDecimal calculatedProduct(BudgetProductReserved budgetProductReserved) {
         Integer quantity = budgetProductReserved.getQuantity();
         if(budgetProductReserved.getProduct().isExistPercentage()) {
-            return budgetProductReserved.getProduct().getDiscountValue().multiply(new BigDecimal(quantity));
+            BigDecimal valueAmount = budgetProductReserved.getProduct().getValue().multiply(new BigDecimal(quantity));
+            BigDecimal valueDiscountAmount = budgetProductReserved.getProduct().getDiscountValue().multiply(new BigDecimal(quantity));
+            return valueAmount.subtract(valueDiscountAmount);
         }
         return budgetProductReserved.getProduct().getValue().multiply(new BigDecimal(quantity));
     }

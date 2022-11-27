@@ -26,12 +26,21 @@ public interface ProductResource {
               @RequestParam(name = "file") MultipartFile file) throws Exception;
 
     @GetMapping("/pageable/{categoryId}")
-    @ApiOperation(value = "Recurso responsavel por buscar os produtos com paginação")
+    @ApiOperation(value = "Recurso responsavel por buscar os produtos por categoria com paginação")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
     Page<ProductView> getAllByPageAndCategory(Pageable pageable,
                                               @PathVariable(name = "categoryId") Long categoryId,
+                                              @RequestParam("productName") String productName);
+
+    @GetMapping("/pageable/all")
+    @ApiOperation(value = "Recurso responsavel por buscar todos os produtos com paginação")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    Page<ProductView> getAllByPage(Pageable pageable,
                                               @RequestParam("productName") String productName);
 }

@@ -29,4 +29,9 @@ public class ProductController implements ProductResource {
     public Page<ProductView> getAllByPageAndCategory(Pageable pageable, Long categoryId, String productName) {
         return service.findAllByCategoryId(categoryId, pageable, productName);
     }
+
+    @Override
+    public Page<ProductView> getAllByPage(Pageable pageable, String productName) {
+        return service.findAll(pageable, productName);
+    }
 }

@@ -43,7 +43,6 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
     private final ProductFileMapperImpl productFileMapper;
     private final CategoryService categoryService;
 
-
     public void saveCustom(String productFormJson,  MultipartFile file) throws Exception {
         try {
 
@@ -55,7 +54,6 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
                     throw new GlobalException("Desconto por porcentagem maior que o permitido");
                 } else {
                     BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
-                    discountValue = productForm.getValue().subtract(discountValue);
                     productForm.setDiscountValue(discountValue);
                 }
             }
@@ -89,6 +87,14 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
         log.info(">> findAllByCategoryId [categoryId={}, pageable={}]", categoryId, pageable);
         Page<Product> products = repository.findAllByCategoryIdAndNameStartsWithIgnoreCase(categoryId, productName, pageable);
         log.info("<< findAllByCategoryId [productsSize={}]", products.getContent().stream().count());
+        List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
+        return new PageImpl<>(view);
+    }
+
+    public Page<ProductView> findAll(Pageable pageable, String productName) {
+        log.info(">> findAll [productName={}, pageable={}]", productName, pageable);
+        Page<Product> products = repository.findAllByNameStartsWithIgnoreCase(productName, pageable);
+        log.info("<< findAll [productsSize={}]", products.getContent().stream().count());
         List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
         return new PageImpl<>(view);
     }

@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -43,6 +44,10 @@ public class Budget {
     @JoinColumn(name = "id_cupom")
     private Cupom cupom;
 
+    @ManyToOne
+    @JoinColumn(name = "id_address")
+    private Address address;
+
     @Column(name = "budget_code")
     private Long code;
 
@@ -60,5 +65,8 @@ public class Budget {
 
     @Column(name = "budget_amount")
     private BigDecimal amount;
+
+    @Column(name = "budget_freight_cost")
+    private BigDecimal freightCost;
 
 }

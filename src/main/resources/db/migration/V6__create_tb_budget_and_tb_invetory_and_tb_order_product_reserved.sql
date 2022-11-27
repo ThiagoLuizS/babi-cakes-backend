@@ -13,11 +13,13 @@ create table if not exists tb_budget
     id_budget             int auto_increment primary key not null,
     id_user               int                            not null,
     id_cupom              int,
+    id_address            int                            not null,
     budget_date_create    datetime                       not null,
     budget_date_finalized datetime,
     budget_code           varchar(50)                    not null,
     budget_status         varchar(100)                   not null,
-    budget_amount         decimal(10, 2)                 not null default 0.0
+    budget_amount         decimal(10, 2)                 not null default 0.0,
+    budget_freight_cost   decimal(10, 2)
 );
 
 alter table tb_budget
@@ -25,6 +27,9 @@ alter table tb_budget
 
 alter table tb_budget
     ADD CONSTRAINT tb_budget_cupom_fkey FOREIGN KEY (id_cupom) REFERENCES tb_cupom (id_cupom);
+
+alter table tb_budget
+    ADD CONSTRAINT tb_budget_address_fkey FOREIGN KEY (id_address) REFERENCES tb_address (id_address);
 
 create table if not exists tb_budget_product_reserved
 (

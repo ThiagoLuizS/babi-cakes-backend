@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
+
 public interface AddressResource {
 
     @PostMapping
@@ -25,7 +27,7 @@ public interface AddressResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    void save(@RequestHeader(name = "Authorization") String authorization, @RequestBody AddressForm addressForm);
+    void save(@RequestHeader(name = "Authorization") String authorization, @Valid @RequestBody AddressForm addressForm);
 
     @GetMapping("/cep/{cep}")
     @ApiOperation(value = "Recurso responsavel por buscar endereço por cep")

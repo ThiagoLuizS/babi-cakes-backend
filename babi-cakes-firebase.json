@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "babi-cakes",
+  "private_key_id": "b3a96b14bc7020e35f064dd13c397106c52eb570",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDWns+8ALG4q6OR\nQI4410QQr+XDjLHHm736PGb85uHRmIPpPN46W3dJWbA7VmP80RbDucJia99zwS0A\nIzE8xhNJxFmraOtg6FwXbAopzfMr3ggeeYKcntaewC02KqJNEzLycq2afN3iJcwH\nuYRZk4CL6ytNqX5EjY6T+F3YtXy4NknruUGjY+Y86YCl1sPIUEWbTuL6WrlUOkSv\nhC13MD66UcZRklSw2tcnuvILdTTUtJL7dg94ZRltB5lYD6lY0r9ovQCmZv2Nissi\nD3q26UgZWLKiy4BMLn4ZjyEWUoqxWYJvokIBmynhrxiljBx4hPZVvLAcBjIkGkFZ\nHQlRKnnTAgMBAAECggEAEmjpstvFuEHo3vh6+qnkfyCc2esDWPb6vdtZOOUT29HJ\nsZkfYEF2TbFxf4rdOtOIsLNfgZJ1Rs2m7uBrRHuig0JiMA+TmUAf84EOAiCrdPOF\nHhrC4cJyRd3VmFQ3OzCkFHin0Z0CaiK0ig5s1EOQfvAQ9TF5JlI/jQvR/lkwYJtc\nmjgLuqpUYQJQrz3y6ZGXZR8V4orf4A8KnsGqe0BvFn+O5aiFxH1qjvQleR/Wq4LY\nMV66laqbKyDngRuxBhqbzvMomrvuBE2CqeFz9tEs/knXSXRo3a9caEc4KWX/txd2\nCv9okVygO+fY1w/4WXeeW1gAmWK6IZZ1gdJvO1eOGQKBgQD41rW9fmtjTdHMNYxF\nhwXKrga0tcjjcavAflnIWq0GVqCH9GMfkr/OIqsyzdBLUW8TOQ7f1FMDTggex87k\nvrz9UPdeXVfZdum+blyWAPezvdvk9vgqLmzVHRi+eBgIM7F0ADPFSDSpWCrjgFny\nliYqlVTquoFcYgwRJLntQQaAvQKBgQDczAB3rh0Xep69P2ZXHT9TM0wz9j1rUE6r\n4U8iJM3q6sJg13cnSePD1J9W7lkhhh3wn5XN0n7iasUhfYsI244ejihKLI7upX0L\nso4XK3ibzfKNzFK8xR0kVb/RceHfSxnlP3l/MZjTLgbWbiBTA/55xQDnLtHz9z9V\nszahsnp1zwKBgHqtsA/qIZtlpEcfJzan6K0RuvCgpperVNej8zOZsK/tSVt9mtjY\nCoPgB7MWUNixHyfE+5ZSIVMBx3MVYuTXPGlO34XAUy09OOPPmQnDFFujAKQTNinl\nlXZD0A0nPAHfKl9cMinS/VN3yj067B1y9QINeT34EQqws+5Hwvo7Eq+pAoGBAL6U\nd3LWHtY9SPcg2j0nSZmPFZ9kU+9lCgLiH2PhULwMlmrwkDChXq+Rv1dRtC1zjjQ8\nCxn1LwBQGIenzXJ/0FQfcDdV7qmevihynqLxKtGRGmO6kU/O9DCAs2kdW1FZiaiO\n+VgIf1kIyW4c8Fm3gNeqa/UgPKjQKSLX5bf8TieRAoGAMmlw71rN9OwDpH/AAQNb\nFrmJjSbzYNeblIXBFh04rizphMIiHYv01rCWj04vMA9RWueoAv4cfYOR6I9VuPki\nnlmLTPbu1m0Q9insTjGIBRqmYCi7UGBwVS80N0ab1zWZHspRDAu0oAFA4UPQ0I/+\nnGF3kQ/bX0CsCSMyVwu/9rg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-aidld@babi-cakes.iam.gserviceaccount.com",
+  "client_id": "102044642618422789071",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-aidld%40babi-cakes.iam.gserviceaccount.com"
+}

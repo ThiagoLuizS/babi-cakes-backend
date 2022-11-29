@@ -68,7 +68,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             Optional<Address> address = addressService.findByUserAndAddressMainIsTrue(user);
 
             if(!address.isPresent()) {
-                throw new GlobalException("Não há endereço principal cadastrado");
+                throw new GlobalException("Informe um endereço principal ou cadastre um novo");
             }
 
             Budget budget = Budget.builder()
@@ -82,10 +82,6 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
                cupom = cupomService.isCupomValid(cupomCode);
             }
 
-            if(cupom.isPresent()) {
-                budget.setCupom(cupom.get());
-            }
-
             List<BudgetProductReserved> budgetProductReserveds = reservedForms.stream()
                     .map(form -> createBudgetProductReserved(form))
                     .collect(Collectors.toList());
@@ -96,6 +92,13 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             budget.setAmount(amount);
             budget.setFreightCost(freightCost);
             budget.setAddress(address.get());
+
+            if(cupom.isPresent()) {
+                if(cupom.get().isCupomIsValueMin() && cupom.get().getCupomValueMin().compareTo(amount) > 0) {
+                    throw new GlobalException("O cupom não é aplicável, pois o valor do pedido está abaixo do valor minimo.");
+                }
+                budget.setCupom(cupom.get());
+            }
 
             repository.save(budget);
 

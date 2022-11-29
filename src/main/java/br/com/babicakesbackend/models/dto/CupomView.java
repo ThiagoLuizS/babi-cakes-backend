@@ -15,11 +15,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class CupomView {
     private Long id;
-    private UserView user;
     private String code;
     private String description;
     private Date dateCreated;
     private Date dateExpired;
-    private CupomStatusEnum cupomStatusEnum;
-    private BigDecimal cupomPercentage;
+    private PropertyStringDTO cupomStatusEnum;
+    private BigDecimal cupomValue;
+    private boolean cupomIsValueMin;
+    private BigDecimal cupomValueMin = BigDecimal.ZERO;
 }

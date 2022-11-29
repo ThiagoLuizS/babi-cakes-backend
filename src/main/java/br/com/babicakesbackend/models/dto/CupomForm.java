@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -30,5 +31,7 @@ public class CupomForm {
     @NotNull(message = "Insira um status para o cupom")
     private CupomStatusEnum cupomStatusEnum;
     @NotNull(message = "Insira o valor do cupom")
-    private BigDecimal cupomPercentage;
+    private BigDecimal cupomValue;
+    private boolean cupomIsValueMin;
+    private BigDecimal cupomValueMin = BigDecimal.ZERO;
 }

@@ -37,10 +37,10 @@ public class AuthenticationService {
 		try {
 			Optional<User> entity =  userRepository.findByEmail(form.getEmail());
 			if (!entity.isPresent()) {
-				throw new NotFoundException("Usuário não existe");
+				throw new GlobalException("Usuário não existe");
 			}
 			if(!entity.get().isEnabled()){
-				throw new NotFoundException("Usuário não está ativo");
+				throw new GlobalException("Usuário não está ativo");
 			}
 
 			Authentication auth = authenticationManager.authenticate(

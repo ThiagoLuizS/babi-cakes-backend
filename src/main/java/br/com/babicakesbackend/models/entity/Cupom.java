@@ -52,6 +52,12 @@ public class Cupom {
     @Column(name = "cupom_status")
     private CupomStatusEnum cupomStatusEnum;
 
-    @Column(name = "cupom_percentage")
-    private BigDecimal cupomPercentage;
+    @Column(name = "cupom_value")
+    private BigDecimal cupomValue;
+
+    @Column(name = "cupom_is_value_min")
+    private boolean cupomIsValueMin;
+
+    @Column(name = "cupom_value_min")
+    private BigDecimal cupomValueMin;
 }

@@ -1,5 +1,10 @@
 package br.com.babicakesbackend.models.enumerators;
 
+import br.com.babicakesbackend.models.dto.PropertyStringDTO;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public enum CupomStatusEnum {
 
     ACTIVE("Ativo"),
@@ -32,5 +37,22 @@ public enum CupomStatusEnum {
 
     public boolean isFinished() {
         return FINISHED.equals(this);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public PropertyStringDTO getProperty() {
+        return PropertyStringDTO.builder()
+                .type(this.name())
+                .status(this.getStatus())
+                .build();
+    }
+
+    public static CupomStatusEnum getInstance(String status) {
+        return Arrays.stream(CupomStatusEnum.values())
+                .filter(ft -> ft.status.equals(status))
+                .findFirst().get();
     }
 }

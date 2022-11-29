@@ -3,6 +3,7 @@ package br.com.babicakesbackend.models.mapper;
 import br.com.babicakesbackend.models.dto.CupomForm;
 import br.com.babicakesbackend.models.dto.CupomView;
 import br.com.babicakesbackend.models.entity.Cupom;
+import br.com.babicakesbackend.models.enumerators.CupomStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,14 @@ public class CupomMapperImpl implements MapStructMapper<Cupom, CupomView, CupomF
     public CupomView entityToView(Cupom cupom) {
         return CupomView.builder()
                 .id(cupom.getId())
-                .user(userMapper.entityToView(cupom.getUser()))
                 .code(cupom.getCode())
                 .description(cupom.getDescription())
                 .dateCreated(cupom.getDateCreated())
                 .dateExpired(cupom.getDateExpired())
-                .cupomPercentage(cupom.getCupomPercentage())
-                .cupomStatusEnum(cupom.getCupomStatusEnum())
+                .cupomValue(cupom.getCupomValue())
+                .cupomIsValueMin(cupom.isCupomIsValueMin())
+                .cupomValueMin(cupom.getCupomValueMin())
+                .cupomStatusEnum(cupom.getCupomStatusEnum().getProperty())
                 .build();
     }
 
@@ -35,7 +37,9 @@ public class CupomMapperImpl implements MapStructMapper<Cupom, CupomView, CupomF
                 .description(cupomForm.getDescription())
                 .dateCreated(cupomForm.getDateCreated())
                 .dateExpired(cupomForm.getDateExpired())
-                .cupomPercentage(cupomForm.getCupomPercentage())
+                .cupomValue(cupomForm.getCupomValue())
+                .cupomIsValueMin(cupomForm.isCupomIsValueMin())
+                .cupomValueMin(cupomForm.getCupomValueMin())
                 .cupomStatusEnum(cupomForm.getCupomStatusEnum())
                 .build();
     }
@@ -44,13 +48,14 @@ public class CupomMapperImpl implements MapStructMapper<Cupom, CupomView, CupomF
     public CupomForm viewToForm(CupomView cupomView) {
         return CupomForm.builder()
                 .id(cupomView.getId())
-                .user(userMapper.viewToForm(cupomView.getUser()))
                 .code(cupomView.getCode())
                 .description(cupomView.getDescription())
                 .dateCreated(cupomView.getDateCreated())
                 .dateExpired(cupomView.getDateExpired())
-                .cupomPercentage(cupomView.getCupomPercentage())
-                .cupomStatusEnum(cupomView.getCupomStatusEnum())
+                .cupomValue(cupomView.getCupomValue())
+                .cupomIsValueMin(cupomView.isCupomIsValueMin())
+                .cupomValueMin(cupomView.getCupomValueMin())
+                .cupomStatusEnum(CupomStatusEnum.getInstance(cupomView.getCupomStatusEnum().getStatus()))
                 .build();
     }
 
@@ -63,7 +68,9 @@ public class CupomMapperImpl implements MapStructMapper<Cupom, CupomView, CupomF
                 .description(cupom.getDescription())
                 .dateCreated(cupom.getDateCreated())
                 .dateExpired(cupom.getDateExpired())
-                .cupomPercentage(cupom.getCupomPercentage())
+                .cupomValue(cupom.getCupomValue())
+                .cupomIsValueMin(cupom.isCupomIsValueMin())
+                .cupomValueMin(cupom.getCupomValueMin())
                 .cupomStatusEnum(cupom.getCupomStatusEnum())
                 .build();
     }

@@ -16,11 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventForm {
+    private Long id;
     @NotBlank(message = "Informe um titulo para mensagem")
     private String title;
     @NotBlank(message = "Informe o corpo da mensagem")
-    private String description;
+    private String message;
     private String image = "";
-    private List<User> users;
     private boolean available = true;
 }

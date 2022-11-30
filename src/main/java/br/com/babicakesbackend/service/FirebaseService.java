@@ -4,7 +4,9 @@ import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.EventForm;
 import br.com.babicakesbackend.models.dto.NotificationForm;
 import br.com.babicakesbackend.models.entity.Device;
+import br.com.babicakesbackend.models.entity.Event;
 import br.com.babicakesbackend.models.entity.User;
+import br.com.babicakesbackend.models.enumerators.EventOriginEnum;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -22,6 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -45,6 +48,9 @@ public class FirebaseService {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private EventService eventService;
 
     public FirebaseService() {
         setupFirebase();
@@ -71,13 +77,13 @@ public class FirebaseService {
     public void sendNewEvent(EventForm eventForm) {
         sendMulticastData(Map.of(
                 "titulo", eventForm.getTitle(),
-                "descricao", eventForm.getDescription(),
+                "descricao", eventForm.getMessage(),
                 "image", eventForm.getImage()
         ));
     }
     @Async
     public void sendNotification(NotificationForm notificationForm) {
-        sendMulticastNotification(notificationForm.getTitle(), notificationForm.getMessage(), "");
+        sendMulticastNotification(notificationForm, "");
     }
 
     @Async
@@ -92,9 +98,7 @@ public class FirebaseService {
             try {
                 MulticastMessage message = createData(map, tokens);
                 BatchResponse batch = sendMulticast(message);
-                if(batch.getFailureCount() > 0) {
-                    removeUnregisteredTokens(batch, tokens);
-                }
+
             } catch (Exception e) {
                 log.error("<< sendMulticastData [error={}]", e.getMessage());
             }
@@ -114,40 +118,55 @@ public class FirebaseService {
             throw new GlobalException("O usuário não tem nenhum dispositivo cadastrado");
         }
 
-        getExtractTokensAndSendNotification(notificationForm.getTitle(), notificationForm.getMessage(), image, devices);
+        getExtractTokensAndSendNotification(notificationForm, image, devices);
     }
 
-    private void getExtractTokensAndSendNotification(String title, String messageParam, String image, List<Device> devices) {
+    private void getExtractTokensAndSendNotification(NotificationForm notificationForm, String image, List<Device> devices) {
         List<String> tokens = devices.stream().map(Device::getToken).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty(devices)) {
             try {
-                MulticastMessage message = createNotification(title, messageParam, image, tokens);
+                MulticastMessage message = createNotification(notificationForm.getTitle(), notificationForm.getMessage(), image, tokens);
                 BatchResponse batch = sendMulticast(message);
-                if(batch.getFailureCount() > 0) {
-                    removeUnregisteredTokens(batch, tokens);
-                }
+
+                registredOcurrenceUnregisteredTokens(batch, tokens, devices, notificationForm);
+
             } catch (Exception e) {
                 log.error("<< sendMulticastData [error={}]", e.getMessage());
             }
         }
     }
 
-    private void sendMulticastNotification(String title, String messageParam, String image) {
+    private void sendMulticastNotification(NotificationForm notificationForm, String image) {
         List<Device> devices = deviceService.findEntityAll();
-        getExtractTokensAndSendNotification(title, messageParam, image, devices);
+        getExtractTokensAndSendNotification(notificationForm, image, devices);
     }
 
-    private void removeUnregisteredTokens(BatchResponse batch, List<String> tokens) {
-        AtomicInteger index = new AtomicInteger();
+    private void registredOcurrenceUnregisteredTokens(BatchResponse batch, List<String> tokens, List<Device> devices, NotificationForm notificationForm) {
+        AtomicInteger index = new AtomicInteger(0);
         tokens.stream().forEach((token) -> {
-            SendResponse it = batch.getResponses().get(tokens.indexOf(index.get()));
+            SendResponse it = batch.getResponses().get(tokens.indexOf(token));
+            
+            Device device = devices.stream().filter(ft -> ft.getToken().equals(token)).findFirst().get();
 
-            boolean unregisteredToken = it.getException().equals(MessagingErrorCode.UNREGISTERED);
-
-            if(!it.isSuccessful() && unregisteredToken) {
-                //TODO: Remove registro do repositorio
+            Event event = Event.builder()
+                    .device(device)
+                    .title(notificationForm.getTitle())
+                    .message(notificationForm.getMessage())
+                    .image("")
+                    .eventOriginEnum(EventOriginEnum.PUSH_NOTIFICATION)
+                    .visualized(false)
+                    .dateSend(new Date())
+                    .build();
+            
+            if(!it.isSuccessful()) {
+                event.setSend(false);
+                eventService.saveCustom(event);
+            } else {
+                event.setSend(true);
+                eventService.saveCustom(event);
             }
 
+            
             index.getAndIncrement();
         });
     }

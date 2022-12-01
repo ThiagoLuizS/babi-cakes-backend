@@ -23,8 +23,10 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .id(userForm.getId())
                 .name(userForm.getName())
                 .email(userForm.getEmail())
-                .password(userForm.getPassword())
+                .phone(userForm.getPhone())
                 .birthday(userForm.getBirthday())
+                .password(userForm.getPassword())
+                .status(userForm.getStatus())
                 .build();
     }
 

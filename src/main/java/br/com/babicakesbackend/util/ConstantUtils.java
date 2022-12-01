@@ -1,6 +1,8 @@
 package br.com.babicakesbackend.util;
 
+import br.com.babicakesbackend.exception.GlobalException;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ConstantUtils {
 
@@ -15,5 +17,21 @@ public class ConstantUtils {
 
 	public static String getSecurityHash(String text) {
 		return DigestUtils.sha256Hex(text);
+	}
+
+	public static boolean validPhone(String phone) {
+		if(StringUtils.length(phone) == 10 || StringUtils.length(phone) == 11) {
+			return true;
+		}
+		throw new GlobalException("O telefone informado não é válido. Informe o DDD + número");
+	}
+
+	public static boolean validEmail(String email) {
+		if(email.toLowerCase().contains("@") &&
+				(email.toLowerCase().contains(".com")
+				|| email.toLowerCase().contains(".br"))) {
+			return true;
+		}
+		throw new GlobalException("O e-mail informado não é um e-mail válido");
 	}
 }

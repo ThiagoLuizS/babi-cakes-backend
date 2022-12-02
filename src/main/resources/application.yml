@@ -17,3 +17,9 @@ value:
   url:
     cep: https://cep.awesomeapi.com.br/json
   freightCost: 4.00
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true

@@ -38,6 +38,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) {
 		web.ignoring()
 			.antMatchers(HttpMethod.POST, "/api/auth")
+				.antMatchers(HttpMethod.POST, "/api/users")
 				.antMatchers("/v2/api-docs",
 						"/configuration/ui",
 						"/swagger-resources/**",

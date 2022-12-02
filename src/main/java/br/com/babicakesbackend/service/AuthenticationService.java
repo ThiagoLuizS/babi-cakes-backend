@@ -73,7 +73,6 @@ public class AuthenticationService {
 
 	public User getUser(String authorization) {
 		try {
-			log.info(">> authenticationUser [authorization={}] ", authorization);
 			if(StringUtils.isNotBlank(authorization)
 					&& !authorization.startsWith(ConstantUtils.JWT_PROVIDER)
 					&& StringUtils.isNotBlank(authorization.substring(7))) {

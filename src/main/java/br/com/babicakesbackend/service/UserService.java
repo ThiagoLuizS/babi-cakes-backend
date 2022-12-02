@@ -61,7 +61,7 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
             User userConvert = userMapper.formToEntity(userForm);
 
             userRepository.save(userConvert);
-            log.info("<< saveCustom [userId={}]", userForm.getId());
+            log.info("<< saveCustom [userId={}]", userConvert.getId());
         } catch (Exception e) {
             log.error("<< saveCustom [error={}]", e.getMessage());
             throw new GlobalException(e.getMessage());

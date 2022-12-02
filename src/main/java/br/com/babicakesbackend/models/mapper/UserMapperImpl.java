@@ -3,6 +3,7 @@ package br.com.babicakesbackend.models.mapper;
 import br.com.babicakesbackend.models.dto.UserForm;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.models.entity.User;
+import br.com.babicakesbackend.util.ConstantUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +26,7 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .email(userForm.getEmail())
                 .phone(userForm.getPhone())
                 .birthday(userForm.getBirthday())
-                .password(userForm.getPassword())
+                .password(ConstantUtils.getSecurityHash(userForm.getPassword()))
                 .status(userForm.getStatus())
                 .build();
     }

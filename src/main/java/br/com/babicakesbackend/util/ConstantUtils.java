@@ -4,6 +4,8 @@ import br.com.babicakesbackend.exception.GlobalException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.Normalizer;
+
 public class ConstantUtils {
 
 	public static final String JWT_SUB_KEY = "sub";
@@ -20,10 +22,18 @@ public class ConstantUtils {
 	}
 
 	public static boolean validPhone(String phone) {
+
+		phone = specialCharacterRemover(phone);
+
 		if(StringUtils.length(phone) == 10 || StringUtils.length(phone) == 11) {
 			return true;
 		}
 		throw new GlobalException("O telefone informado não é válido. Informe o DDD + número");
+	}
+
+	public static String specialCharacterRemover(String string) {
+		string = StringUtils.remove(string, " ");
+		return Normalizer.normalize(string.trim(), Normalizer.Form.NFD).replaceAll("[^a-zZ-Z1-9 ]", "");
 	}
 
 	public static boolean validEmail(String email) {

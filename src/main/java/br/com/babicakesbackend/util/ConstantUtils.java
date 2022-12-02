@@ -21,12 +21,12 @@ public class ConstantUtils {
 		return DigestUtils.sha256Hex(text);
 	}
 
-	public static boolean validPhone(String phone) {
+	public static String validPhone(String phone) {
 
 		phone = specialCharacterRemover(phone);
 
 		if(StringUtils.length(phone) == 10 || StringUtils.length(phone) == 11) {
-			return true;
+			return phone;
 		}
 		throw new GlobalException("O telefone informado não é válido. Informe o DDD + número");
 	}

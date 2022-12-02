@@ -54,7 +54,8 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
                 throw new GlobalException("O email informado já está cadastrado");
             }
 
-            ConstantUtils.validPhone(userForm.getPhone());
+            String phone = ConstantUtils.validPhone(userForm.getPhone());
+            userForm.setPhone(phone);
 
             ConstantUtils.validEmail(userForm.getEmail());
 ;

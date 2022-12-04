@@ -63,6 +63,9 @@ public class Budget {
     @Column(name = "budget_status")
     private BudgetStatusEnum budgetStatusEnum;
 
+    @Column(name = "budget_subtotal")
+    private BigDecimal subTotal;
+
     @Column(name = "budget_amount")
     private BigDecimal amount;
 

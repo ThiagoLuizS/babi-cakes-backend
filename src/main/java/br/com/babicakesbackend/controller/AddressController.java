@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/address")
 @RequiredArgsConstructor
@@ -37,5 +39,10 @@ public class AddressController implements AddressResource {
     @Override
     public void updateAddressMain(String authorization, Long id) {
         service.updateAddressMain(authorization, id);
+    }
+
+    @Override
+    public Optional<AddressView> getAddressByMain(String authorization) {
+        return service.findByAddressMainIsTrueAndUser(authorization);
     }
 }

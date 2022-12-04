@@ -18,6 +18,7 @@ create table if not exists tb_budget
     budget_date_finalized datetime,
     budget_code           varchar(50)                    not null,
     budget_status         varchar(100)                   not null,
+    budget_subtotal       decimal(10, 2)                 not null default 0.0,
     budget_amount         decimal(10, 2)                 not null default 0.0,
     budget_freight_cost   decimal(10, 2)
 );

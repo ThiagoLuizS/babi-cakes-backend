@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 public interface AddressResource {
 
@@ -52,4 +53,12 @@ public interface AddressResource {
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
     void updateAddressMain(@RequestHeader(name = "Authorization") String authorization, @PathVariable("id") Long id);
+
+    @GetMapping("/main")
+    @ApiOperation(value = "Recurso responsavel por buscar o endereço principal do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    Optional<AddressView> getAddressByMain(@RequestHeader("Authorization") String authorization);
 }

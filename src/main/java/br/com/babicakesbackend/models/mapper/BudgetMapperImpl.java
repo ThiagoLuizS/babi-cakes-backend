@@ -6,22 +6,29 @@ import br.com.babicakesbackend.models.entity.Budget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, BudgetForm> {
 
     @Autowired
     private AddressMapperImpl addressMapper;
 
+    @Autowired
+    private CupomMapperImpl cupomMapper;
+
     @Override
     public BudgetView entityToView(Budget budget) {
         return BudgetView.builder()
                 .id(budget.getId())
                 .address(addressMapper.entityToView(budget.getAddress()))
+                .cupom(Objects.nonNull(budget.getCupom()) ? cupomMapper.entityToView(budget.getCupom()) : null)
                 .code(budget.getCode())
                 .dateCreateBudget(budget.getDateCreateBudget())
                 .dateFinalizedBudget(budget.getDateFinalizedBudget())
                 .budgetStatusEnum(budget.getBudgetStatusEnum().getProperty())
                 .freightCost(budget.getFreightCost())
+                .subTotal(budget.getSubTotal())
                 .amount(budget.getAmount())
                 .build();
     }

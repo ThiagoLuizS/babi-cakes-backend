@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.models.dto;
 
 import br.com.babicakesbackend.models.entity.Address;
+import br.com.babicakesbackend.models.entity.Cupom;
 import br.com.babicakesbackend.models.enumerators.BudgetStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,11 +22,13 @@ import java.util.List;
 public class BudgetView {
     private Long id;
     private AddressView address;
+    private CupomView cupom;
     private Long code;
     private Date dateCreateBudget;
     private Date dateFinalizedBudget;
     private PropertyStringDTO budgetStatusEnum;
     List<BudgetProductReservedView> productReservedViewList;
+    private BigDecimal subTotal;
     private BigDecimal amount;
     private BigDecimal freightCost;
 }

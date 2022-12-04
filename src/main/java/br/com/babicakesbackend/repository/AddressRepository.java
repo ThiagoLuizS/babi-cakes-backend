@@ -18,4 +18,6 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<Address> findByUser(User user, Pageable pageable);
 
     List<Address> findByUser(User user);
+
+    Optional<Address> findByAddressMainIsTrueAndUser(User user);
 }

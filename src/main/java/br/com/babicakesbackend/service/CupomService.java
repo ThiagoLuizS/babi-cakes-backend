@@ -89,6 +89,16 @@ public class CupomService extends AbstractService<Cupom, CupomView, CupomForm> {
         return cupom;
     }
 
+    public void applyCoupon(Cupom cupom) {
+        cupom.setCupomStatusEnum(CupomStatusEnum.APPLIED);
+        repository.save(cupom);
+    }
+
+    public void activateCoupon(Cupom cupom) {
+        cupom.setCupomStatusEnum(CupomStatusEnum.ACTIVE);
+        repository.save(cupom);
+    }
+
     public Page<CupomView> findByUserAndCupomStatusEnum(String authorization, CupomStatusEnum cupomStatusEnum, Pageable pageable) {
         User user = authenticationService.getUser(authorization);
         log.info(">> findByUser [user Id={}]", user.getId());

@@ -53,9 +53,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
     private final CupomService cupomService;
     private final BudgetProductReservedMapperImpl budgetProductReservedMapper;
     private final AddressService addressService;
-
-    @Value("${value.freightCost}")
-    private BigDecimal freightCost;
+    private final ParameterizationService parameterizationService;
 
     public void createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
         try {
@@ -86,19 +84,30 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
                     .map(form -> createBudgetProductReserved(form))
                     .collect(Collectors.toList());
 
-            BigDecimal amount = budgetProductReserveds.stream()
-                    .map(this::calculatedProduct).reduce(BigDecimal.ZERO, BigDecimal::add);
+            Optional<Cupom> finalCupom = cupom;
+            BigDecimal subTotal = budgetProductReserveds.stream()
+                    .map(item -> calculatedProduct(item, finalCupom.isPresent())).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            budget.setAmount(amount);
+            BigDecimal freightCost = parameterizationService.findFreightCost();
+
+            budget.setSubTotal(subTotal);
             budget.setFreightCost(freightCost);
             budget.setAddress(address.get());
 
+            BigDecimal amount = BigDecimal.ZERO;
+            amount = amount.add(subTotal);
+            amount = amount.subtract(freightCost);
+
             if(cupom.isPresent()) {
-                if(cupom.get().isCupomIsValueMin() && cupom.get().getCupomValueMin().compareTo(amount) > 0) {
+                if(cupom.get().isCupomIsValueMin() && cupom.get().getCupomValueMin().compareTo(subTotal) > 0) {
                     throw new GlobalException("O cupom não é aplicável, pois o valor do pedido está abaixo do valor minimo.");
                 }
+                amount = amount.subtract(cupom.get().getCupomValue());
                 budget.setCupom(cupom.get());
+                cupomService.applyCoupon(cupom.get());
             }
+
+            budget.setAmount(amount);
 
             repository.save(budget);
 
@@ -131,6 +140,10 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             budget.get().setBudgetStatusEnum(BudgetStatusEnum.CANCELED_ORDER);
             budget.get().setDateFinalizedBudget(new Date());
 
+            if(Objects.nonNull(budget.get().getCupom())) {
+                cupomService.activateCoupon(budget.get().getCupom());
+            }
+
             repository.save(budget.get());
 
         } catch (Exception e) {
@@ -158,9 +171,9 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         return new PageImpl<>(new ArrayList<>(views));
     }
 
-    public BigDecimal calculatedProduct(BudgetProductReserved budgetProductReserved) {
+    public BigDecimal calculatedProduct(BudgetProductReserved budgetProductReserved, boolean isCupom) {
         Integer quantity = budgetProductReserved.getQuantity();
-        if(budgetProductReserved.getProduct().isExistPercentage()) {
+        if(budgetProductReserved.getProduct().isExistPercentage() && !isCupom) {
             BigDecimal valueAmount = budgetProductReserved.getProduct().getValue().multiply(new BigDecimal(quantity));
             BigDecimal valueDiscountAmount = budgetProductReserved.getProduct().getDiscountValue().multiply(new BigDecimal(quantity));
             return valueAmount.subtract(valueDiscountAmount);

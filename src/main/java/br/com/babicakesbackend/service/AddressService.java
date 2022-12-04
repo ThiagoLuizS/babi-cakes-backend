@@ -97,6 +97,17 @@ public class AddressService extends AbstractService<Address, AddressView, Addres
         return new PageImpl<>(views);
     }
 
+    public Optional<AddressView> findByAddressMainIsTrueAndUser(String authorization) {
+        User user = authenticationService.getUser(authorization);
+        log.info(">> findAddressByIsTrueAndUser [userId={}]", user.getId());
+        Optional<Address> address = repository.findByAddressMainIsTrueAndUser(user);
+        log.info("<< findAddressByIsTrueAndUser [addressIsPresent={}]", address.isPresent());
+        if(address.isPresent()) {
+            return Optional.of(addressMapper.entityToView(address.get()));
+        }
+        return Optional.empty();
+    }
+
     @Override
     protected JpaRepository<Address, Long> getRepository() {
         return repository;

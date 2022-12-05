@@ -17,4 +17,6 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     Optional<Budget> findByCode(Long code);
 
     Page<Budget> findByUser(User user, Pageable pageable);
+
+    Optional<Budget> findByUserAndId(User user, Long budgetId);
 }

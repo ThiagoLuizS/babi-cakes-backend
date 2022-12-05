@@ -152,6 +152,61 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
     }
 
+    public void paidBudget(Long budgetCode) {
+        Optional<Budget> budget = repository.findByCode(budgetCode);
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Orçamento/Pedido não encontrado");
+        }
+
+        budget.get().setBudgetStatusEnum(BudgetStatusEnum.PAID_OUT);
+        repository.save(budget.get());
+    }
+
+    public void preparingBudget(Long budgetCode) {
+        Optional<Budget> budget = repository.findByCode(budgetCode);
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Orçamento/Pedido não encontrado");
+        }
+
+        budget.get().setBudgetStatusEnum(BudgetStatusEnum.PREPARING_ORDER);
+        repository.save(budget.get());
+    }
+
+    public void waitingForDelivery(Long budgetCode) {
+        Optional<Budget> budget = repository.findByCode(budgetCode);
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Orçamento/Pedido não encontrado");
+        }
+
+        budget.get().setBudgetStatusEnum(BudgetStatusEnum.WAITING_FOR_DELIVERY);
+        repository.save(budget.get());
+    }
+
+    public void budgetIsOutForDelivery(Long budgetCode) {
+        Optional<Budget> budget = repository.findByCode(budgetCode);
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Orçamento/Pedido não encontrado");
+        }
+
+        budget.get().setBudgetStatusEnum(BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY);
+        repository.save(budget.get());
+    }
+
+    public void budgetDelivery(Long budgetCode) {
+        Optional<Budget> budget = repository.findByCode(budgetCode);
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Orçamento/Pedido não encontrado");
+        }
+
+        budget.get().setBudgetStatusEnum(BudgetStatusEnum.ORDER_DELIVERED);
+        repository.save(budget.get());
+    }
+
     public Page<BudgetView> findBudgetPageByUser(String authorization, Pageable pageable) {
         User user = authenticationService.getUser(authorization);
         log.info(">> findBudgetUser [user={}, pageable={}]", user.getEmail(), pageable);
@@ -159,6 +214,28 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         Page<Budget> page = repository.findByUser(user, pageable);
         log.info("<< findBudgetUser [page size={}]", page.getSize());
 
+        List<BudgetView> views = getReservedByBudgetPage(page);
+
+        return new PageImpl<>(new ArrayList<>(views));
+    }
+
+    public BudgetView findBudgetByUserAndById(String authorization, Long budgetId) {
+        User user = authenticationService.getUser(authorization);
+        log.info(">> findBudgetByCode [user={}, budgetId={}]", user.getEmail(), budgetId);
+
+        Optional<Budget> budget = repository.findByUserAndId(user, budgetId);
+        log.info("<< findBudgetUser [budgetIsPresent={}]", budget.isPresent());
+
+        if(!budget.isPresent()) {
+            throw new GlobalException("Nenhum pedido encontrado");
+        }
+
+        BudgetView view = getReservedByBudget(budget.get());
+
+        return view;
+    }
+
+    private List<BudgetView> getReservedByBudgetPage(Page<Budget> page) {
         List<BudgetView> views = page.getContent().stream().map(budgetMapper::entityToView)
                 .collect(Collectors.toList());
 
@@ -167,8 +244,15 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             budget.setProductReservedViewList(list.stream()
                     .map(budgetProductReservedMapper::entityToView).collect(Collectors.toList()));
         });
+        return views;
+    }
 
-        return new PageImpl<>(new ArrayList<>(views));
+    private BudgetView getReservedByBudget(Budget budget) {
+        BudgetView views = budgetMapper.entityToView(budget);
+        List<BudgetProductReserved> list = budgetProductReservedService.findByBudgetCode(budget.getCode());
+        views.setProductReservedViewList(list.stream()
+                .map(budgetProductReservedMapper::entityToView).collect(Collectors.toList()));
+        return views;
     }
 
     public BigDecimal calculatedProduct(BudgetProductReserved budgetProductReserved, boolean isCupom) {
@@ -190,7 +274,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
         if(product.get().isWithStock()) {
             Optional<Inventory> inventory = inventoryService.findByProductId(product.get().getId());
-            if(!inventory.isPresent()) {
+            if(!inventory.isPresent() || (inventory.isPresent() && inventory.get().getQuantity() == 0)) {
                 throw new GlobalException("Produto " + product.get().getName() + " está em falta");
             }
 

@@ -36,4 +36,34 @@ public class BudgetController implements BudgetResource {
         return service.findBudgetPageByUser(authorization, pageable);
     }
 
+    @Override
+    public BudgetView getBudgetByUserAndById(String authorization, Long budgetId) {
+        return service.findBudgetByUserAndById(authorization, budgetId);
+    }
+
+    @Override
+    public void paidBudget(Long budgetCode) {
+        service.paidBudget(budgetCode);
+    }
+
+    @Override
+    public void preparingBudget(Long budgetCode) {
+        service.preparingBudget(budgetCode);
+    }
+
+    @Override
+    public void waitingForDelivery(Long budgetCode) {
+        service.waitingForDelivery(budgetCode);
+    }
+
+    @Override
+    public void budgetIsOutForDelivery(Long budgetCode) {
+        service.budgetIsOutForDelivery(budgetCode);
+    }
+
+    @Override
+    public void budgetDelivery(Long budgetCode) {
+        service.budgetDelivery(budgetCode);
+    }
+
 }

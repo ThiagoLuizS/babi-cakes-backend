@@ -51,4 +51,58 @@ public interface BudgetResource {
     })
     Page<BudgetView> getBudgetPageByUser(@RequestHeader(name = "Authorization") String authorization,
                                      Pageable pageable);
+
+    @GetMapping("/id/{budgetId}")
+    @ApiOperation(value = "Recurso responsavel por obter buscar os orçamentos paginados")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    BudgetView getBudgetByUserAndById(@RequestHeader(name = "Authorization") String authorization,
+                                      @PathVariable(value = "budgetId") Long budgetId);
+
+    @PutMapping("/paid/{budgetCode}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Recurso responsavel por atualizar pedido para 'pago'")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void paidBudget(@PathVariable("budgetCode") Long budgetCode);
+
+    @PutMapping("/preparing/{budgetCode}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Recurso responsavel por atualizar pedido para 'preparando pedido'")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void preparingBudget(@PathVariable("budgetCode") Long budgetCode);
+
+    @PutMapping("/waiting-for-delivery/{budgetCode}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Recurso responsavel por atualizar pedido para 'aguardando entregador'")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void waitingForDelivery(@PathVariable("budgetCode") Long budgetCode);
+
+    @PutMapping("/out-for-delivery/{budgetCode}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Recurso responsavel por atualizar pedido para 'saiu para entregua'")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void budgetIsOutForDelivery(@PathVariable("budgetCode") Long budgetCode);
+
+    @PutMapping("/delivery/{budgetCode}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Recurso responsavel por atualizar pedido para 'entregue'")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void budgetDelivery(@PathVariable("budgetCode") Long budgetCode);
 }

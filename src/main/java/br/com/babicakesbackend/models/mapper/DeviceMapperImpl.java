@@ -31,4 +31,9 @@ public class DeviceMapperImpl implements MapStructMapper<Device, DeviceView, Dev
     public DeviceForm entityToForm(Device device) {
         return null;
     }
+
+    @Override
+    public Device viewToEntity(DeviceView deviceView) {
+        return null;
+    }
 }

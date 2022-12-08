@@ -54,4 +54,9 @@ public class CategoryMapperImpl implements MapStructMapper<Category, CategoryVie
                 .show(category.isShow())
                 .build();
     }
+
+    @Override
+    public Category viewToEntity(CategoryView categoryView) {
+        return null;
+    }
 }

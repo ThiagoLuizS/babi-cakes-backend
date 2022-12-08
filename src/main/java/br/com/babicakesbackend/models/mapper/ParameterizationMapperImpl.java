@@ -30,4 +30,9 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
     public ParameterizationForm entityToForm(Parameterization parameterization) {
         return null;
     }
+
+    @Override
+    public Parameterization viewToEntity(ParameterizationView parameterizationView) {
+        return null;
+    }
 }

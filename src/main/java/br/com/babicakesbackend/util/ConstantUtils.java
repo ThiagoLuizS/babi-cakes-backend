@@ -4,7 +4,10 @@ import br.com.babicakesbackend.exception.GlobalException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.Normalizer;
+import java.util.Objects;
+import java.util.Random;
 
 public class ConstantUtils {
 
@@ -43,5 +46,40 @@ public class ConstantUtils {
 			return true;
 		}
 		throw new GlobalException("O e-mail informado não é um e-mail válido");
+	}
+
+	public static BigDecimal formatBigCentsToInt(BigDecimal value) {
+		BigDecimal result = BigDecimal.ZERO;
+		for (int i = 1; i < 10; i++) {
+			BigDecimal compare = new BigDecimal("0.0"+i) ;
+			if(value.compareTo(compare) == 0) {
+				result = new BigDecimal(i);
+				return result;
+			}
+		}
+		return result;
+	}
+
+	public static String generatedRandomNumber(Integer digits) {
+		if(Objects.nonNull(digits)) {
+			StringBuilder text = new StringBuilder();
+			Random random = new Random();
+			for (int i = 0; i < digits; i++) {
+				text.append(random.nextInt(10)); // gerar um número aleatório entre 0 e 9
+			}
+			return text.toString();
+		} else {
+			return String.valueOf(0);
+		}
+	}
+
+	public static String formatToShar(String value) {
+		return value.substring(0,8)
+				.concat("-")
+				.concat(value.substring(7,12))
+				.concat("-")
+				.concat(value.substring(11,14))
+				.concat("-")
+				.concat(value.substring(13,23));
 	}
 }

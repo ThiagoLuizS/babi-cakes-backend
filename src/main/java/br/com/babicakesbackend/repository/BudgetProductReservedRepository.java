@@ -12,5 +12,5 @@ public interface BudgetProductReservedRepository extends JpaRepository<BudgetPro
 
     List<BudgetProductReserved> findByBudget(Budget budget);
 
-    List<BudgetProductReserved> findByBudgetCode(Long budgetCode);
+    List<BudgetProductReserved> findByBudgetId(Long budgetId);
 }

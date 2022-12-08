@@ -28,27 +28,8 @@ public class CategoryControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void save() throws Exception {
-        URI uri = new URI("/api/categories");
+    public void save() {
 
-        MockMultipartFile file = new MockMultipartFile("doces",
-                "C:\\Users\\thiag\\Pictures\\flutter_images\\doces.jpg",
-                "image/jpeg",
-                "doces".getBytes());
-
-
-        CategoryForm categoryForm = CategoryForm.builder()
-                .name("Doces")
-                .description("Doces")
-                .file(file)
-                .build();
-
-        String json = new Gson().toJson(categoryForm);
-
-        mockMvc.perform(MockMvcRequestBuilders.post(uri)
-                        .content(json)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.CREATED.value()));
     }
 
 }

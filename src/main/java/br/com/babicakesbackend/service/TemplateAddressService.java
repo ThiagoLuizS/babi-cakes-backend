@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TemplateService {
+public class TemplateAddressService {
 
     @Value("${value.url.cep}")
     private String urlCep;

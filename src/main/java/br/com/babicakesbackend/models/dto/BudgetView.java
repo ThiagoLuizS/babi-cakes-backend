@@ -23,6 +23,7 @@ public class BudgetView {
     private Long id;
     private AddressView address;
     private CupomView cupom;
+    private UserView user;
     private Long code;
     private Date dateCreateBudget;
     private Date dateFinalizedBudget;

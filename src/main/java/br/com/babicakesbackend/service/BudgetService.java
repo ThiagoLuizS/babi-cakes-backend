@@ -88,7 +88,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             BigDecimal subTotal = budgetProductReserveds.stream()
                     .map(item -> calculatedProduct(item, finalCupom.isPresent())).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            BigDecimal freightCost = parameterizationService.findFreightCost();
+            BigDecimal freightCost = new BigDecimal("0.04"); //parameterizationService.findFreightCost();
 
             budget.setSubTotal(subTotal);
             budget.setFreightCost(freightCost);
@@ -108,12 +108,15 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             }
 
             budget.setAmount(amount);
+            budget.setUser(user);
 
             repository.save(budget);
 
             budgetProductReserveds.stream().forEach(item -> item.setBudget(budget));
 
             budgetProductReservedService.saveAll(budgetProductReserveds);
+
+            repository.flush();
 
         }catch (Exception e) {
             log.error(">> createNewBudget [error={}]", e.getMessage());
@@ -223,7 +226,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         User user = authenticationService.getUser(authorization);
         log.info(">> findBudgetByCode [user={}, budgetId={}]", user.getEmail(), budgetId);
 
-        Optional<Budget> budget = repository.findByUserAndId(user, budgetId);
+        Optional<Budget> budget = findByUserAndId(user, budgetId);
         log.info("<< findBudgetUser [budgetIsPresent={}]", budget.isPresent());
 
         if(!budget.isPresent()) {
@@ -235,12 +238,16 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         return view;
     }
 
+    public Optional<Budget> findByUserAndId(User user, Long budgetId) {
+        return repository.findByUserAndId(user, budgetId);
+    }
+
     private List<BudgetView> getReservedByBudgetPage(Page<Budget> page) {
         List<BudgetView> views = page.getContent().stream().map(budgetMapper::entityToView)
                 .collect(Collectors.toList());
 
         views.stream().forEach(budget -> {
-            List<BudgetProductReserved> list = budgetProductReservedService.findByBudgetCode(budget.getCode());
+            List<BudgetProductReserved> list = budgetProductReservedService.findByBudgetCode(budget.getId());
             budget.setProductReservedViewList(list.stream()
                     .map(budgetProductReservedMapper::entityToView).collect(Collectors.toList()));
         });
@@ -249,7 +256,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
     private BudgetView getReservedByBudget(Budget budget) {
         BudgetView views = budgetMapper.entityToView(budget);
-        List<BudgetProductReserved> list = budgetProductReservedService.findByBudgetCode(budget.getCode());
+        List<BudgetProductReserved> list = budgetProductReservedService.findByBudget(budget);
         views.setProductReservedViewList(list.stream()
                 .map(budgetProductReservedMapper::entityToView).collect(Collectors.toList()));
         return views;

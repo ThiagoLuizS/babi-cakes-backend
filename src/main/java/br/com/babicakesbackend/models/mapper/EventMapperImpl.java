@@ -41,4 +41,9 @@ public class EventMapperImpl implements MapStructMapper<Event, EventView, EventF
     public EventForm entityToForm(Event event) {
         return null;
     }
+
+    @Override
+    public Event viewToEntity(EventView eventView) {
+        return null;
+    }
 }

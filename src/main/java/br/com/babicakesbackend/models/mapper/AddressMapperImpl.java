@@ -79,4 +79,9 @@ public class AddressMapperImpl implements MapStructMapper<Address, AddressView, 
                 .cityIbge(address.getCityIbge())
                 .build();
     }
+
+    @Override
+    public Address viewToEntity(AddressView addressView) {
+        return null;
+    }
 }

@@ -29,4 +29,13 @@ public class Parameterization {
     @Column(name = "param_freight_cost")
     private BigDecimal freightCost = BigDecimal.ZERO;
 
+    @Column(name = "param_pix_api_key")
+    private String apiKey;
+
+    @Column(name = "param_pix_account_key")
+    private String accountKey;
+
+    @Column(name = "param_pix_client_key")
+    private String clientKey;
+
 }

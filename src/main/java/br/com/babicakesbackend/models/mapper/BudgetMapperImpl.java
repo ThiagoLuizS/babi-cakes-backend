@@ -17,12 +17,16 @@ public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, Bud
     @Autowired
     private CupomMapperImpl cupomMapper;
 
+    @Autowired
+    private UserMapperImpl userMapper;
+
     @Override
     public BudgetView entityToView(Budget budget) {
         return BudgetView.builder()
                 .id(budget.getId())
                 .address(addressMapper.entityToView(budget.getAddress()))
                 .cupom(Objects.nonNull(budget.getCupom()) ? cupomMapper.entityToView(budget.getCupom()) : null)
+                .user(userMapper.entityToView(budget.getUser()))
                 .code(budget.getCode())
                 .dateCreateBudget(budget.getDateCreateBudget())
                 .dateFinalizedBudget(budget.getDateFinalizedBudget())
@@ -55,5 +59,10 @@ public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, Bud
                 .id(budget.getId())
                 .code(budget.getCode())
                 .build();
+    }
+
+    @Override
+    public Budget viewToEntity(BudgetView budgetView) {
+        return null;
     }
 }

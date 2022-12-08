@@ -47,4 +47,9 @@ public class InventoryMapperImpl implements MapStructMapper<Inventory, Inventory
                 .quantity(inventory.getQuantity())
                 .build();
     }
+
+    @Override
+    public Inventory viewToEntity(InventoryView inventoryView) {
+        return null;
+    }
 }

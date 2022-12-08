@@ -74,4 +74,9 @@ public class CupomMapperImpl implements MapStructMapper<Cupom, CupomView, CupomF
                 .cupomStatusEnum(cupom.getCupomStatusEnum())
                 .build();
     }
+
+    @Override
+    public Cupom viewToEntity(CupomView cupomView) {
+        return null;
+    }
 }

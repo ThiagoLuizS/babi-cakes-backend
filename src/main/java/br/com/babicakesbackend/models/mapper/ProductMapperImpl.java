@@ -89,4 +89,9 @@ public class ProductMapperImpl implements MapStructMapper<Product, ProductView, 
                 .withStock(product.isWithStock())
                 .build();
     }
+
+    @Override
+    public Product viewToEntity(ProductView productView) {
+        return null;
+    }
 }

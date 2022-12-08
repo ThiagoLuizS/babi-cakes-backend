@@ -13,6 +13,8 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
     public UserView entityToView(User user) {
         return UserView.builder()
                 .id(user.getId())
+                .name(user.getName())
+                .phone(user.getPhone())
                 .email(user.getEmail())
                 .status(user.getStatus())
                 .build();
@@ -50,5 +52,10 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .password(user.getPassword())
                 .birthday(user.getBirthday())
                 .build();
+    }
+
+    @Override
+    public User viewToEntity(UserView userView) {
+        return null;
     }
 }

@@ -45,4 +45,9 @@ public class BudgetProductReservedMapperImpl implements
                 .quantity(budgetProductReserved.getQuantity())
                 .build();
     }
+
+    @Override
+    public BudgetProductReserved viewToEntity(BudgetProductReservedView budgetProductReservedView) {
+        return null;
+    }
 }

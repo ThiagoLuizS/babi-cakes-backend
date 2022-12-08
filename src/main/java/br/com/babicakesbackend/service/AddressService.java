@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ public class AddressService extends AbstractService<Address, AddressView, Addres
     private final AddressRepository repository;
     private final AddressMapperImpl addressMapper;
     private final AuthenticationService authenticationService;
-    private final TemplateService templateService;
+    private final TemplateAddressService templateAddressService;
 
     public void saveCustom(String authorization, AddressForm addressForm) {
         try {
@@ -52,7 +51,7 @@ public class AddressService extends AbstractService<Address, AddressView, Addres
     }
 
     public AddressForm findAddressByCep(String cep) {
-        return templateService.findAddressByCep(cep);
+        return templateAddressService.findAddressByCep(cep);
     }
 
     public void updateAddressMain(String authorization, Long id) {

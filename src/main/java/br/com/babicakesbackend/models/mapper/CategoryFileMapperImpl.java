@@ -46,4 +46,9 @@ public class CategoryFileMapperImpl implements MapStructMapper<CategoryFile, Cat
                 .photo(categoryFile.getPhoto())
                 .build();
     }
+
+    @Override
+    public CategoryFile viewToEntity(CategoryFileView categoryFileView) {
+        return null;
+    }
 }

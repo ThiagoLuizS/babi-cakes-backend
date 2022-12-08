@@ -38,9 +38,9 @@ public class BudgetProductReservedService
         return list;
     }
 
-    public List<BudgetProductReserved> findByBudgetCode(Long budgetCode) {
-        log.info(">> findByBudgetCode [budgetCode={}]", budgetCode);
-        List<BudgetProductReserved> list = repository.findByBudgetCode(budgetCode);
+    public List<BudgetProductReserved> findByBudgetCode(Long budgetId) {
+        log.info(">> findByBudgetCode [budgetId={}]", budgetId);
+        List<BudgetProductReserved> list = repository.findByBudgetId(budgetId);
         log.info("<< findByBudgetCode [length={}]", list.size());
         return list;
     }

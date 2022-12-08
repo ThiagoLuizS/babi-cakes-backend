@@ -9,4 +9,5 @@ public interface MapStructMapper<T, View, Form> {
     T formToEntity(Form form);
     Form viewToForm(View view);
     Form entityToForm(T t);
+    T viewToEntity(View view);
 }

@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.models.entity;
 
 import br.com.babicakesbackend.models.enumerators.PixStatusEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,6 +42,9 @@ public class Charge {
     @Column(name = "charge_expiration")
     private Integer expiration;
 
+    @Column(name = "charge_expires_date")
+    private Date expiresDate;
+
     @Column(name = "charge_created")
     private Date created;
 
@@ -54,6 +60,7 @@ public class Charge {
     @Column(name = "charge_transaction_ID")
     private String transactionID;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "charge_status")
     private PixStatusEnum status;
 

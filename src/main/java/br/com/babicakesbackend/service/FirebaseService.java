@@ -24,10 +24,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -74,6 +77,15 @@ public class FirebaseService {
     }
 
     @Async
+    public void sendNewEventByUser(EventForm eventForm, User user) {
+        sendMulticastData(Map.of(
+                "titulo", eventForm.getTitle(),
+                "descricao", eventForm.getMessage(),
+                "image", eventForm.getImage()
+        ), user);
+    }
+
+    @Async
     public void sendNewEvent(EventForm eventForm) {
         sendMulticastData(Map.of(
                 "titulo", eventForm.getTitle(),
@@ -92,7 +104,17 @@ public class FirebaseService {
     }
 
     private void sendMulticastData(Map<String, String> map) {
-        List<Device> devices = deviceService.findEntityAll();
+        this.sendMulticastData(map, null);
+    }
+
+    private void sendMulticastData(Map<String, String> map, User user) {
+        List<Device> devices = new ArrayList<>();
+        if(Objects.isNull(user)) {
+            devices = deviceService.findByUser(user);
+        } else {
+            devices = deviceService.findEntityAll();
+        }
+
         List<String> tokens = devices.stream().map(Device::getToken).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty(devices)) {
             try {

@@ -2,6 +2,7 @@ package br.com.babicakesbackend.util;
 
 import br.com.babicakesbackend.exception.GlobalException;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -19,6 +20,8 @@ public class ConstantUtils {
 	public static final String API_KEYS = "secret";
 	public static final String JWT_PROVIDER = "Bearer";
 	public static final String JWT_ROLE_KEY = "role";
+
+	public static final String ROUTE_ID_v1 = "babicakes-getdata-v1";
 
 	public static String getSecurityHash(String text) {
 		return DigestUtils.sha256Hex(text);
@@ -46,6 +49,14 @@ public class ConstantUtils {
 			return true;
 		}
 		throw new GlobalException("O e-mail informado não é um e-mail válido");
+	}
+
+	public static String getFirstName(String name) {
+		String[] names = name.split(" ");
+		if(CollectionUtils.size(names) > 0) {
+			return names[0];
+		}
+		return name;
 	}
 
 	public static BigDecimal formatBigCentsToInt(BigDecimal value) {

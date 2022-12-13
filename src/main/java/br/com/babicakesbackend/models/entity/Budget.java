@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.models.entity;
 
 import br.com.babicakesbackend.models.enumerators.BudgetStatusEnum;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -79,9 +80,10 @@ public class Budget {
     private BigDecimal freightCost;
 
 
-//    @JoinTable(name = "tb_budget_charge",
-//            joinColumns = {@JoinColumn(name = "budget_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "charge_id")})
-    @OneToMany(mappedBy = "budget", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Charge> charges;
+////    @JoinTable(name = "tb_budget_charge",
+////            joinColumns = {@JoinColumn(name = "budget_id")},
+////            inverseJoinColumns = {@JoinColumn(name = "charge_id")})
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "budget", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Charge> charges;
 }

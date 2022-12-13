@@ -3,6 +3,7 @@ create table if not exists tb_charge
     id_charge             int auto_increment primary key not null,
     id_budget             int                            not null,
     charge_expiration     int                            not null,
+    charge_expires_date   datetime                       not null,
     charge_created        datetime                       not null,
     charge_tax_ID         text                           not null,
     charge_value          decimal(10, 2)                 not null,

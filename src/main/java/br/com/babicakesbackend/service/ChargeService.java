@@ -17,6 +17,9 @@ import br.com.babicakesbackend.repository.ChargeRepository;
 import br.com.babicakesbackend.util.ConstantUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,21 +52,28 @@ public class ChargeService {
 
             BudgetView budgetView = budgetService.findBudgetByUserAndById(authorization, budgetId);
 
-            validChargeExists(budgetView);
+            List<Charge> charges = chargeRepository.findByBudgetId(budgetView.getId());
+
+            Optional<Charge> chargeExist = validChargeActiveExists(budgetView, charges);
 
             if(Objects.equals(BudgetStatusEnum.valueOf(budgetView.getBudgetStatusEnum().getType()), BudgetStatusEnum.AWAITING_PAYMENT)) {
 
-                ChargeForm chargeForm = getChargeForm(budgetView);
+                if(!chargeExist.isPresent()) {
+                    ChargeForm chargeForm = getChargeForm(budgetView);
 
-                ChargeView chargeView = pixService.createImmediateCharge(chargeForm);
+                    ChargeView chargeView = pixService.createImmediateCharge(chargeForm);
 
-                Charge charge = chargeMapper.viewToEntity(chargeView);
+                    Charge charge = chargeMapper.viewToEntity(chargeView);
 
-                charge.setBudget(Budget.builder().id(budgetView.getId()).build());
+                    charge.setBudget(Budget.builder().id(budgetView.getId()).build());
 
-                chargeRepository.save(charge);
+                    chargeRepository.save(charge);
 
-                return charge;
+                    return charge;
+                }
+
+               return chargeExist.get();
+
             } else {
                 throw new GlobalException("O pedido não está aguardando um pagamento");
             }
@@ -73,14 +84,26 @@ public class ChargeService {
         }
     }
 
-    private void validChargeExists(BudgetView budgetView) {
-        List<Charge> charges = chargeRepository.findByBudgetId(budgetView.getId());
-
+    private Optional<Charge> validChargeActiveExists(BudgetView budgetView, List<Charge> charges) {
         charges.stream().forEach(charge -> {
             if(charge.getStatus().equals(PixStatusEnum.COMPLETED) && charge.getValue().compareTo(budgetView.getAmount()) == 0) {
                 throw new GlobalException("O pedido de N° " + budgetView.getCode() + " já foi pago");
             }
         });
+
+        List<Charge> first = charges.stream().filter(ft -> ft.getStatus().equals(PixStatusEnum.ACTIVE)
+                        && new Date().compareTo(ft.getExpiresDate()) <= 0)
+                .collect(Collectors.toList());
+
+        if(CollectionUtils.isEmpty(first)) {
+            return Optional.empty();
+        }
+
+        return first.stream().findFirst();
+    }
+
+    public Charge saveCustom(Charge charge) {
+        return chargeRepository.save(charge);
     }
 
     private static ChargeForm getChargeForm(BudgetView budgetView) {
@@ -102,6 +125,10 @@ public class ChargeService {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public Page<Charge> findByStatus(PixStatusEnum status, Pageable pageable) {
+        return chargeRepository.findByStatus(status, pageable);
     }
 
 

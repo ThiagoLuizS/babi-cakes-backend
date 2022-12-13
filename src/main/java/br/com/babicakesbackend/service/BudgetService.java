@@ -4,6 +4,8 @@ import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.BudgetForm;
 import br.com.babicakesbackend.models.dto.BudgetProductReservedForm;
 import br.com.babicakesbackend.models.dto.BudgetView;
+import br.com.babicakesbackend.models.dto.EventForm;
+import br.com.babicakesbackend.models.dto.NotificationForm;
 import br.com.babicakesbackend.models.entity.Address;
 import br.com.babicakesbackend.models.entity.Budget;
 import br.com.babicakesbackend.models.entity.BudgetProductReserved;
@@ -12,11 +14,13 @@ import br.com.babicakesbackend.models.entity.Inventory;
 import br.com.babicakesbackend.models.entity.Product;
 import br.com.babicakesbackend.models.entity.User;
 import br.com.babicakesbackend.models.enumerators.BudgetStatusEnum;
+import br.com.babicakesbackend.models.enumerators.PixStatusEnum;
 import br.com.babicakesbackend.models.mapper.BudgetMapperImpl;
 import br.com.babicakesbackend.models.mapper.BudgetProductReservedMapperImpl;
 import br.com.babicakesbackend.models.mapper.InventoryMapperImpl;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.repository.BudgetRepository;
+import br.com.babicakesbackend.util.ConstantUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +57,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
     private final CupomService cupomService;
     private final BudgetProductReservedMapperImpl budgetProductReservedMapper;
     private final AddressService addressService;
-    private final ParameterizationService parameterizationService;
+    private final FirebaseService firebaseService;
 
     public void createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
         try {
@@ -163,7 +167,12 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
 
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.PAID_OUT);
-        repository.save(budget.get());
+        budget.get().setDateFinalizedBudget(new Date());
+        repository.saveAndFlush(budget.get());
+    }
+
+    public Budget saveCustom(Budget budget) {
+        return repository.save(budget);
     }
 
     public void preparingBudget(Long budgetCode) {
@@ -174,7 +183,17 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
 
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.PREPARING_ORDER);
-        repository.save(budget.get());
+        repository.saveAndFlush(budget.get());
+
+        firebaseService.sendNewEventByUser(EventForm.builder()
+                .title("BUDGET: " + BudgetStatusEnum.PREPARING_ORDER.name())
+                .message("BUDGET: " + BudgetStatusEnum.PREPARING_ORDER.name())
+                .image("")
+                .build(), budget.get().getUser());
+        firebaseService.sendNotificationByUser(NotificationForm.builder()
+                .title(ConstantUtils.getFirstName(budget.get().getUser().getName()))
+                .message("O seu pedido está sendo preparado!")
+                .build(), budget.get().getUser().getId());
     }
 
     public void waitingForDelivery(Long budgetCode) {
@@ -220,6 +239,10 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         List<BudgetView> views = getReservedByBudgetPage(page);
 
         return new PageImpl<>(new ArrayList<>(views));
+    }
+
+    public Page<Budget> findByBudgetStatusEnum(BudgetStatusEnum status, Pageable pageable) {
+        return repository.findByBudgetStatusEnum(status, pageable);
     }
 
     public BudgetView findBudgetByUserAndById(String authorization, Long budgetId) {

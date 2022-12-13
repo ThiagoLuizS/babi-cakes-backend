@@ -32,6 +32,7 @@ public class ChargeMapperImpl implements MapStructMapper<Charge, ChargeView, Cha
     public Charge viewToEntity(ChargeView chargeView) {
         return Charge.builder()
                 .expiration(chargeView.getCharge().getExpiresIn())
+                .expiresDate(chargeView.getCharge().getExpiresDate())
                 .created(chargeView.getCharge().getCreatedAt())
                 .taxID(chargeView.getCharge().getCustomer().getTaxID().getTaxID())
                 .value(chargeView.getCharge().getValue())

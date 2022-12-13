@@ -16,3 +16,16 @@ server:
 value:
   url:
     pix: https://api.openpix.com.br/api/openpix/v1/
+
+camel:
+  component:
+    quartz2:
+      cron:
+        v1: cron:tab?schedule=0/30+*+*+*+*+?
+
+#quartz2://myGroup/myTimerName?cron=0/2 0 0 ? * * *
+#timer://foo?repeatCount=1
+
+pageable:
+  request:
+    size: 150

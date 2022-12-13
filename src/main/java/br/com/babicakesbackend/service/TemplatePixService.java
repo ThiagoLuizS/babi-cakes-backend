@@ -66,5 +66,22 @@ public class TemplatePixService extends HeaderTemplateService {
         }
     }
 
+    public ChargeView getImmediateChargeNoAction(String transactionID) {
+        try {
+            log.info(">> getImmediateCharge [transactionID={}]", transactionID);
+            Optional<Parameterization> param = parameterizationService.getParametrization();
+            HttpEntity<ChargeForm> request = new HttpEntity<>(createHeaderPixForBasicAuthorization(param.get().getApiKey()));
+            ResponseEntity<ChargeView> response = restTemplate.exchange(urlPath + "charge/" + transactionID, HttpMethod.GET, request, ChargeView.class);
+            if(Objects.equals(response.getStatusCode(), HttpStatus.CREATED)
+                    || Objects.equals(response.getStatusCode(), HttpStatus.OK)) {
+                return response.getBody();
+            }
+        } catch (Exception e) {
+            log.error("<< getImmediateCharge [error={}]", e.getMessage());
+        }
+
+        return null;
+    }
+
 
 }

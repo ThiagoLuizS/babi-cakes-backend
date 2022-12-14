@@ -45,4 +45,9 @@ public class AddressController implements AddressResource {
     public Optional<AddressView> getAddressByMain(String authorization) {
         return service.findByAddressMainIsTrueAndUser(authorization);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        service.delete(id);
+    }
 }

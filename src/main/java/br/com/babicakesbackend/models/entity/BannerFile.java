@@ -10,35 +10,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 
 @Data
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_parameterization")
-public class Parameterization {
+@Table(name = "tb_banner_file")
+public class BannerFile {
 
     @Id
-    @Column(name = "id_param")
+    @Column(name = "id_file")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "param_freight_cost")
-    private BigDecimal freightCost = BigDecimal.ZERO;
+    @Column(name = "file_name")
+    private String name;
 
-    @Column(name = "param_pix_api_key")
-    private String apiKey;
+    @Column(name = "file_type")
+    private String type;
 
-    @Column(name = "param_pix_account_key")
-    private String accountKey;
-
-    @Column(name = "param_pix_client_key")
-    private String clientKey;
-
-    @Column(name = "param_city_limit")
-    private String cityLimit;
+    @Lob
+    @Column(name = "file_byte", columnDefinition = "BLOB")
+    private byte[] photo;
 
 }

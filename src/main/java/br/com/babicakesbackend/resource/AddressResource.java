@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,4 +62,9 @@ public interface AddressResource {
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
     Optional<AddressView> getAddressByMain(@RequestHeader("Authorization") String authorization);
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Recurso responsavel por deletar o endereço pelo seu ID")
+    void deleteById(@PathVariable("id") Long id);
 }

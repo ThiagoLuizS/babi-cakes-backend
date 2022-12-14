@@ -1,20 +1,17 @@
 package br.com.babicakesbackend.service;
 
+import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.CategoryFileForm;
 import br.com.babicakesbackend.models.dto.CategoryFileView;
 import br.com.babicakesbackend.models.dto.CategoryForm;
 import br.com.babicakesbackend.models.dto.CategoryView;
 import br.com.babicakesbackend.models.entity.Category;
-import br.com.babicakesbackend.models.entity.CategoryFile;
-import br.com.babicakesbackend.models.mapper.CategoryFileMapperImpl;
 import br.com.babicakesbackend.models.mapper.CategoryMapperImpl;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.repository.CategoryRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,7 +28,6 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
 
     private final CategoryRepository repository;
     private final CategoryMapperImpl categoryMapper;
-    private final CategoryFileMapperImpl categoryFileMapper;
     private final CategoryFileService categoryFileService;
 
     public void saveCustom(String categoryFormJson,  MultipartFile file) throws Exception {
@@ -46,13 +42,13 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
                     .build();
 
             CategoryFileView fileView = categoryFileService.save(categoryFileForm);
-            categoryFileForm = categoryFileMapper.viewToForm(fileView);
+            categoryFileForm = categoryFileService.getConverter().viewToForm(fileView);
             categoryForm.setCategoryFileForm(categoryFileForm);
             save(categoryForm);
 
         } catch (Exception e) {
             log.error("<< Error [error={}]", e.getMessage());
-            throw new Exception("Falha ao salvar a categoria");
+            throw new GlobalException("Falha ao salvar a categoria");
         }
     }
 

@@ -6,6 +6,8 @@ import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.util.ConstantsMessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +64,20 @@ public abstract class AbstractService<T, View, Form> {
             log.error("<< save [error={}]", e.getMessage());
             throw new GlobalException(e.getMessage());
         }
+    }
 
+    public T saveToEntity(Form form) {
+        try {
+            log.debug(">> save [form={}] ", form);
+            T converting = getConverter().formToEntity(form);
+            log.debug(">> save [converting={}] ", converting);
+            T entity = getRepository().save(converting);
+            log.debug(">> save [entity={}] ", entity);
+            return entity;
+        } catch (Exception e) {
+            log.error("<< save [error={}]", e.getMessage());
+            throw new GlobalException(e.getMessage());
+        }
     }
 
     public View update(Form form) {
@@ -71,11 +86,20 @@ public abstract class AbstractService<T, View, Form> {
     }
 
     public void delete(Long id) {
-        log.debug(">> delete [id={}] ", id);
-        Optional<T> t = getRepository().findById(id);
-        if(!t.isPresent()) {
-            throw new NotFoundException(ConstantsMessageUtils.NOT_FOUND);
+        try {
+            log.debug(">> delete [id={}] ", id);
+            Optional<T> t = getRepository().findById(id);
+            if(!t.isPresent()) {
+                throw new GlobalException(ConstantsMessageUtils.NOT_FOUND);
+            }
+            getRepository().delete(t.get());
+        } catch (DataIntegrityViolationException e) {
+            log.error("<< delete [error={}]", e.getMessage());
+            throw new GlobalException("Não é possivel excluir, pois está sendo utilizado.");
+        } catch (Exception e) {
+            log.error("<< delete [error={}]", e.getMessage());
+            throw new GlobalException(e.getMessage());
         }
-        getRepository().delete(t.get());
+
     }
 }

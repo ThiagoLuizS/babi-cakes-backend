@@ -215,7 +215,18 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
 
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY);
-        repository.save(budget.get());
+
+        repository.saveAndFlush(budget.get());
+
+        firebaseService.sendNewEventByUser(EventForm.builder()
+                .title("BUDGET: " + BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY.name())
+                .message("BUDGET: " + BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY.name())
+                .image("")
+                .build(), budget.get().getUser());
+        firebaseService.sendNotificationByUser(NotificationForm.builder()
+                .title(ConstantUtils.getFirstName(budget.get().getUser().getName()))
+                .message("O seu pedido saiu para entrega!")
+                .build(), budget.get().getUser().getId());
     }
 
     public void budgetDelivery(Long budgetCode) {
@@ -226,7 +237,15 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
 
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.ORDER_DELIVERED);
-        repository.save(budget.get());
+
+        repository.saveAndFlush(budget.get());
+
+        firebaseService.sendNewEventByUser(EventForm.builder()
+                .title("BUDGET: " + BudgetStatusEnum.ORDER_DELIVERED.name())
+                .message("BUDGET: " + BudgetStatusEnum.ORDER_DELIVERED.name())
+                .image("")
+                .build(), budget.get().getUser());
+
     }
 
     public Page<BudgetView> findBudgetPageByUser(String authorization, Pageable pageable) {

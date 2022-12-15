@@ -55,6 +55,9 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
     public CategoryForm findCategoryFormById(Long id) {
         log.info(">> findCategoryFormById [id={}]", id);
         Optional<Category> category = repository.findById(id);
+        if(!category.isPresent()) {
+            throw new GlobalException("Categoria informada não existe");
+        }
         log.info("<< findCategoryFormById [data={}]", category.get().getId());
         return categoryMapper.entityToForm(category.get());
     }

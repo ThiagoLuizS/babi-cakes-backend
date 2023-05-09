@@ -79,7 +79,4 @@ public class Budget {
     @Column(name = "budget_freight_cost")
     private BigDecimal freightCost;
 
-    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER)
-    private List<BudgetProductReserved> reserveds;
-
 }

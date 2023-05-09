@@ -109,7 +109,7 @@ public class ChargeService {
     private static ChargeForm getChargeForm(BudgetView budgetView) {
         return ChargeForm.builder()
                 .correlationID(ConstantUtils.formatToShar(ConstantUtils.generatedRandomNumber(32)))
-                .value(budgetView.getAmount().compareTo(BigDecimal.TEN) < 0 ? ConstantUtils.formatBigCentsToInt(budgetView.getAmount()) : budgetView.getAmount())
+                .value(budgetView.getAmount().multiply(new BigDecimal(100)))
                 .comment("Pedido Nº " + budgetView.getCode())
                 .customer(CustomerForm.builder()
                         .name(budgetView.getUser().getName())

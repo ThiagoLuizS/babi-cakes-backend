@@ -102,7 +102,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
             BigDecimal amount = BigDecimal.ZERO;
             amount = amount.add(subTotal);
-            amount = amount.subtract(freightCost);
+            amount = amount.add(freightCost);
 
             if(cupom.isPresent()) {
                 if(cupom.get().isCupomIsValueMin() && cupom.get().getCupomValueMin().compareTo(subTotal) > 0) {
@@ -124,9 +124,9 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
             repository.flush();
 
-            budgetSaveNew = repository.findBudgetByCodeAndFetch(budgetSaveNew.getCode());
+            Optional<Budget> budgetOpt = repository.findByCode(budgetSaveNew.getCode());
 
-            return getConverter().entityToView(budgetSaveNew);
+            return getConverter().entityToView(budgetOpt.get());
 
         }catch (Exception e) {
             log.error(">> createNewBudget [error={}]", e.getMessage());

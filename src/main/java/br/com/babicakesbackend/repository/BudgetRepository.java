@@ -25,8 +25,4 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     Page<Budget> findByBudgetStatusEnum(BudgetStatusEnum status, Pageable pageable);
 
-    @Query("select DISTINCT bud from Budget bud " +
-            "left join fetch bud.reserveds res " +
-            "where bud.code = :code")
-    Budget findBudgetByCodeAndFetch(Long code);
 }

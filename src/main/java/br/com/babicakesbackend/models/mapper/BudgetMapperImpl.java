@@ -37,8 +37,6 @@ public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, Bud
                 .freightCost(budget.getFreightCost())
                 .subTotal(budget.getSubTotal())
                 .amount(budget.getAmount())
-                .productReservedViewList(Objects.nonNull(budget.getReserveds()) ? budget.getReserveds().stream()
-                        .map(productReservedMapper::entityToView).collect(Collectors.toList()) : null)
                 .build();
     }
 

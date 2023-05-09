@@ -21,8 +21,8 @@ public class ProductController implements ProductResource {
     private final ProductService service;
 
     @Override
-    public void save(String productFormJson, MultipartFile file) throws Exception {
-        service.saveCustom(productFormJson, file);
+    public ProductView save(String productFormJson, MultipartFile file) throws Exception {
+        return service.saveCustom(productFormJson, file);
     }
 
     @Override

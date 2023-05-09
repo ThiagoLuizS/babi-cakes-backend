@@ -26,7 +26,7 @@ public interface ProductResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    void save(@RequestParam(name = "form") String productFormJson,
+    ProductView save(@RequestParam(name = "form") String productFormJson,
               @RequestParam(name = "file") MultipartFile file) throws Exception;
 
     @GetMapping("/pageable/{categoryId}")

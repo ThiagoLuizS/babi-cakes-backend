@@ -43,7 +43,7 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
     private final ProductFileMapperImpl productFileMapper;
     private final CategoryService categoryService;
 
-    public void saveCustom(String productFormJson,  MultipartFile file) throws Exception {
+    public ProductView saveCustom(String productFormJson,  MultipartFile file) throws Exception {
         try {
 
             ProductForm productForm = new Gson().fromJson(productFormJson, ProductForm.class);
@@ -75,7 +75,7 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
             productForm.setProductFileForm(productFileForm);
             productForm.setCategoryForm(categoryForm);
 
-            save(productForm);
+            return save(productForm);
 
         } catch (Exception e) {
             log.error("<< Error [error={}]", e.getMessage());

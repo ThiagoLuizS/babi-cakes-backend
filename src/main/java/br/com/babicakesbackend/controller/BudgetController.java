@@ -22,8 +22,8 @@ public class BudgetController implements BudgetResource {
     private final BudgetService service;
 
     @Override
-    public void createNewOrder(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
-        service.createNewBudget(authorization, cupomCode, reservedForms);
+    public BudgetView createNewOrder(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
+        return service.createNewBudget(authorization, cupomCode, reservedForms);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class BudgetView {
     private Date dateCreateBudget;
     private Date dateFinalizedBudget;
     private PropertyStringDTO budgetStatusEnum;
-    List<BudgetProductReservedView> productReservedViewList;
+    private List<BudgetProductReservedView> productReservedViewList;
     private BigDecimal subTotal;
     private BigDecimal amount;
     private BigDecimal freightCost;

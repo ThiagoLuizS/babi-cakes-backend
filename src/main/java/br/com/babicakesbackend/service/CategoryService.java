@@ -30,7 +30,7 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
     private final CategoryMapperImpl categoryMapper;
     private final CategoryFileService categoryFileService;
 
-    public void saveCustom(String categoryFormJson,  MultipartFile file) throws Exception {
+    public CategoryView saveCustom(String categoryFormJson,  MultipartFile file) throws Exception {
         try {
 
             CategoryForm categoryForm = new Gson().fromJson(categoryFormJson, CategoryForm.class);
@@ -44,8 +44,7 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
             CategoryFileView fileView = categoryFileService.save(categoryFileForm);
             categoryFileForm = categoryFileService.getConverter().viewToForm(fileView);
             categoryForm.setCategoryFileForm(categoryFileForm);
-            save(categoryForm);
-
+            return save(categoryForm);
         } catch (Exception e) {
             log.error("<< Error [error={}]", e.getMessage());
             throw new GlobalException("Falha ao salvar a categoria");

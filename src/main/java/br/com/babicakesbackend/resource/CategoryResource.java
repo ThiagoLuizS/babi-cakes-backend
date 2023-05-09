@@ -26,7 +26,7 @@ public interface CategoryResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    void save(@RequestParam(name = "form") String categoryFormJson,
+    CategoryView save(@RequestParam(name = "form") String categoryFormJson,
               @RequestParam(name = "file") MultipartFile file) throws Exception;
 
     @GetMapping("/pageable")

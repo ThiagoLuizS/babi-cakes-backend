@@ -21,8 +21,8 @@ public class CategoryController implements CategoryResource {
     private final CategoryService service;
 
     @Override
-    public void save(String categoryFormJson, MultipartFile file) throws Exception {
-        service.saveCustom(categoryFormJson, file);
+    public CategoryView save(String categoryFormJson, MultipartFile file) throws Exception {
+        return service.saveCustom(categoryFormJson, file);
     }
 
     @Override

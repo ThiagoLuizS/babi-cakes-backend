@@ -30,7 +30,7 @@ public interface BudgetResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    void createNewOrder(@RequestHeader(name = "Authorization") String authorization,
+    BudgetView createNewOrder(@RequestHeader(name = "Authorization") String authorization,
                         @RequestParam(name = "cupomCode", required = false) String cupomCode,
                         @RequestBody List<BudgetProductReservedForm> reservedForms);
 

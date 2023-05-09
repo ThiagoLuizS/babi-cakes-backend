@@ -59,7 +59,9 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
     private final AddressService addressService;
     private final FirebaseService firebaseService;
 
-    public void createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
+    private final ParameterizationService parameterizationService;
+
+    public BudgetView createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
         try {
             Optional<Cupom> cupom = Optional.empty();
 
@@ -92,7 +94,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             BigDecimal subTotal = budgetProductReserveds.stream()
                     .map(item -> calculatedProduct(item, finalCupom.isPresent())).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            BigDecimal freightCost = new BigDecimal("0.04"); //parameterizationService.findFreightCost();
+            BigDecimal freightCost = parameterizationService.findFreightCost();
 
             budget.setSubTotal(subTotal);
             budget.setFreightCost(freightCost);
@@ -114,13 +116,17 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             budget.setAmount(amount);
             budget.setUser(user);
 
-            repository.save(budget);
+            Budget budgetSaveNew = repository.saveAndFlush(budget);
 
             budgetProductReserveds.stream().forEach(item -> item.setBudget(budget));
 
             budgetProductReservedService.saveAll(budgetProductReserveds);
 
             repository.flush();
+
+            budgetSaveNew = repository.findBudgetByCodeAndFetch(budgetSaveNew.getCode());
+
+            return getConverter().entityToView(budgetSaveNew);
 
         }catch (Exception e) {
             log.error(">> createNewBudget [error={}]", e.getMessage());

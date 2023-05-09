@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, BudgetForm> {
@@ -19,6 +20,8 @@ public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, Bud
 
     @Autowired
     private UserMapperImpl userMapper;
+
+    private BudgetProductReservedMapperImpl productReservedMapper;
 
     @Override
     public BudgetView entityToView(Budget budget) {
@@ -34,6 +37,8 @@ public class BudgetMapperImpl implements MapStructMapper<Budget, BudgetView, Bud
                 .freightCost(budget.getFreightCost())
                 .subTotal(budget.getSubTotal())
                 .amount(budget.getAmount())
+                .productReservedViewList(Objects.nonNull(budget.getReserveds()) ? budget.getReserveds().stream()
+                        .map(productReservedMapper::entityToView).collect(Collectors.toList()) : null)
                 .build();
     }
 

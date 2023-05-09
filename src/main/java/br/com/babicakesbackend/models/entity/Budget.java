@@ -79,11 +79,7 @@ public class Budget {
     @Column(name = "budget_freight_cost")
     private BigDecimal freightCost;
 
+    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER)
+    private List<BudgetProductReserved> reserveds;
 
-////    @JoinTable(name = "tb_budget_charge",
-////            joinColumns = {@JoinColumn(name = "budget_id")},
-////            inverseJoinColumns = {@JoinColumn(name = "charge_id")})
-//    @JsonManagedReference
-//    @OneToMany(mappedBy = "budget", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Charge> charges;
 }

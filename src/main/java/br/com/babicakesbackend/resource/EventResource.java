@@ -29,6 +29,15 @@ public interface EventResource {
     })
     void sendNewEvent(@Valid @RequestBody EventForm eventForm);
 
+    @PostMapping("/multicast-event-user")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Recurso responsavel por enviar dados por meio de eventos")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    void sendNewEventByUser(@RequestHeader("Authorization") String authorization, @Valid @RequestBody EventForm eventForm);
+
     @PostMapping("/multicast-notification")
     @ResponseStatus(HttpStatus.CREATED)@ApiOperation(value = "Recurso responsavel por enviar notificação para todos os usuários")
     @ApiResponses(value = {

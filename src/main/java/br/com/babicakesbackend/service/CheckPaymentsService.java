@@ -52,8 +52,8 @@ public class CheckPaymentsService {
                     chargeService.saveCustom(charge);
 
                     firebaseService.sendNewEventByUser(EventForm.builder()
-                                    .title("PIX: " + PixStatusEnum.COMPLETED.name())
-                                    .message("BUDGET: " + BudgetStatusEnum.PAID_OUT.name())
+                                    .title("Obrigado!")
+                                    .message("Recebemos seu PIX, estamos preparando sua encomenda!")
                                     .image("")
                             .build(), charge.getBudget().getUser());
                     firebaseService.sendNotificationByUser(NotificationForm.builder()

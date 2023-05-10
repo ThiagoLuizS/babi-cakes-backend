@@ -55,6 +55,9 @@ public class FirebaseService {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     public FirebaseService() {
         setupFirebase();
     }
@@ -74,6 +77,11 @@ public class FirebaseService {
                 log.error("<< setupFirebase [error=Configuration already exists]");
             }
         }
+    }
+
+    public void sendNewEventByUser(String authorization, EventForm eventForm) {
+        User user = authenticationService.getUser(authorization);
+        sendNewEventByUser(eventForm, user);
     }
 
     @Async

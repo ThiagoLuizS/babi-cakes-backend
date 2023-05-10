@@ -191,14 +191,17 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.PREPARING_ORDER);
         repository.saveAndFlush(budget.get());
 
+        String title = "Prontinho, " + ConstantUtils.getFirstName(budget.get().getUser().getName()) + " !";
+        String description = "Seu pedido está sendo preparado!";
+
         firebaseService.sendNewEventByUser(EventForm.builder()
-                .title("BUDGET: " + BudgetStatusEnum.PREPARING_ORDER.name())
-                .message("BUDGET: " + BudgetStatusEnum.PREPARING_ORDER.name())
+                .title(title)
+                .message(description)
                 .image("")
                 .build(), budget.get().getUser());
         firebaseService.sendNotificationByUser(NotificationForm.builder()
-                .title(ConstantUtils.getFirstName(budget.get().getUser().getName()))
-                .message("O seu pedido está sendo preparado!")
+                .title(title)
+                .message(description)
                 .build(), budget.get().getUser().getId());
     }
 
@@ -210,7 +213,21 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         }
 
         budget.get().setBudgetStatusEnum(BudgetStatusEnum.WAITING_FOR_DELIVERY);
-        repository.save(budget.get());
+
+        repository.saveAndFlush(budget.get());
+
+        String title = "Seu pedido está pronto!";
+        String description = "O seu pedido está pronto e estamos aguardando o entregador.";
+
+        firebaseService.sendNewEventByUser(EventForm.builder()
+                .title(title)
+                .message(description)
+                .image("")
+                .build(), budget.get().getUser());
+        firebaseService.sendNotificationByUser(NotificationForm.builder()
+                .title(title)
+                .message(description)
+                .build(), budget.get().getUser().getId());
     }
 
     public void budgetIsOutForDelivery(Long budgetCode) {
@@ -224,14 +241,17 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
         repository.saveAndFlush(budget.get());
 
+        String title = "Prontinho!";
+        String description = "O seu pedido saiu para entrega";
+
         firebaseService.sendNewEventByUser(EventForm.builder()
-                .title("BUDGET: " + BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY.name())
-                .message("BUDGET: " + BudgetStatusEnum.ORDER_IS_OUT_FOR_DELIVERY.name())
+                .title(title)
+                .message(description)
                 .image("")
                 .build(), budget.get().getUser());
         firebaseService.sendNotificationByUser(NotificationForm.builder()
-                .title(ConstantUtils.getFirstName(budget.get().getUser().getName()))
-                .message("O seu pedido saiu para entrega!")
+                .title(title)
+                .message(description)
                 .build(), budget.get().getUser().getId());
     }
 
@@ -246,9 +266,12 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
         repository.saveAndFlush(budget.get());
 
+        String title = "Olá, " + ConstantUtils.getFirstName(budget.get().getUser().getName());
+        String description = "O seu pedido N° "+ budgetCode +" foi entregue";
+
         firebaseService.sendNewEventByUser(EventForm.builder()
-                .title("BUDGET: " + BudgetStatusEnum.ORDER_DELIVERED.name())
-                .message("BUDGET: " + BudgetStatusEnum.ORDER_DELIVERED.name())
+                .title(title)
+                .message(description)
                 .image("")
                 .build(), budget.get().getUser());
 

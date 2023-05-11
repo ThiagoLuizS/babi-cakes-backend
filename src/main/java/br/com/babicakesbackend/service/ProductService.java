@@ -8,7 +8,9 @@ import br.com.babicakesbackend.models.dto.ProductFileForm;
 import br.com.babicakesbackend.models.dto.ProductFileView;
 import br.com.babicakesbackend.models.dto.ProductForm;
 import br.com.babicakesbackend.models.dto.ProductView;
+import br.com.babicakesbackend.models.entity.Inventory;
 import br.com.babicakesbackend.models.entity.Product;
+import br.com.babicakesbackend.models.entity.ProductFile;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.models.mapper.ProductFileMapperImpl;
 import br.com.babicakesbackend.models.mapper.ProductMapperImpl;
@@ -42,27 +44,17 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
     private final ProductFileService productFileService;
     private final ProductFileMapperImpl productFileMapper;
     private final CategoryService categoryService;
+    private final InventoryService inventoryService;
+
 
     public ProductView saveCustom(String productFormJson,  MultipartFile file) throws Exception {
         try {
 
             ProductForm productForm = new Gson().fromJson(productFormJson, ProductForm.class);
 
-            if(Objects.nonNull(productForm.getPercentageValue())
-                    && productForm.getPercentageValue().compareTo(BigDecimal.ZERO) > 0) {
-                if(productForm.getPercentageValue().compareTo(new BigDecimal(100)) > 0) {
-                    throw new GlobalException("Desconto por porcentagem maior que o permitido");
-                } else {
-                    BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
-                    productForm.setDiscountValue(discountValue);
-                }
-            }
+            validatedPercentageAndDicount(productForm);
 
-            CategoryForm categoryForm = categoryService.findCategoryFormById(productForm.getCategoryId());
-
-            if(repository.existsByCode(productForm.getCode())) {
-                throw new GlobalException("Código do produto já existe");
-            }
+            CategoryForm categoryForm = validatedCategory(productForm);
 
             ProductFileForm productFileForm = ProductFileForm.builder()
                     .name(file.getOriginalFilename())
@@ -83,17 +75,106 @@ public class ProductService extends AbstractService<Product, ProductView, Produc
         }
     }
 
-    public Page<ProductView> findAllByCategoryId(Long categoryId, Pageable pageable, String productName) {
+    public ProductView updateCustom(Long id, String productFormJson, MultipartFile file) throws Exception {
+        Optional<Product> product = findById(id);
+
+        if(!product.isPresent()) {
+            throw new GlobalException("Produto não encontrado");
+        }
+
+        ProductForm productForm = new Gson().fromJson(productFormJson, ProductForm.class);
+
+        productForm.setId(product.get().getId());
+
+        validatedPercentageAndDicount(productForm);
+
+        CategoryForm categoryForm = categoryService.findCategoryFormById(productForm.getCategoryId());
+
+        ProductFile productFile = product.get().getProductFile();
+
+        ProductFileForm productFileForm = ProductFileForm.builder()
+                .id(Objects.nonNull(productFile.getId()) ? productFile.getId() : null)
+                .name(file.getOriginalFilename())
+                .type(file.getContentType())
+                .photo(file.getBytes())
+                .build();
+
+        ProductFileView fileView = productFileService.save(productFileForm);
+        productFileForm = productFileMapper.viewToForm(fileView);
+        productForm.setProductFileForm(productFileForm);
+        productForm.setCategoryForm(categoryForm);
+
+        return save(productForm);
+    }
+
+    public void inactivateProduct(Long id) {
+        try {
+            Optional<Product> product = findEntityById(id);
+
+            if(!product.isPresent()) {
+                throw new GlobalException("O produto informado não existe");
+            }
+
+            product.get().setExcluded(true);
+
+            Optional<Inventory> inventory = inventoryService.findByProductId(id);
+
+            if(inventory.isPresent()) {
+                inventoryService.deleteInvetory(inventory.get());
+            }
+
+            repository.save(product.get());
+
+        } catch (GlobalException e) {
+            log.error(">> Error ao excluir produto [productId={}]", id);
+            throw new GlobalException("Não foi possivel excluir o produto");
+        }
+    }
+
+    public void reactivateProduct(Long id) {
+        Optional<Product> product = findEntityById(id);
+
+        if(!product.isPresent()) {
+            throw new GlobalException("O produto informado não existe");
+        }
+
+        product.get().setExcluded(false);
+
+        repository.save(product.get());
+    }
+
+    private CategoryForm validatedCategory(ProductForm productForm) {
+        CategoryForm categoryForm = categoryService.findCategoryFormById(productForm.getCategoryId());
+
+        if(repository.existsByCode(productForm.getCode())) {
+            throw new GlobalException("Código do produto já existe");
+        }
+        return categoryForm;
+    }
+
+    private static void validatedPercentageAndDicount(ProductForm productForm) {
+        if(Objects.nonNull(productForm.getPercentageValue())
+                && productForm.getPercentageValue().compareTo(BigDecimal.ZERO) > 0) {
+            if(productForm.getPercentageValue().compareTo(new BigDecimal(100)) > 0) {
+                throw new GlobalException("Desconto por porcentagem maior que o permitido");
+            } else {
+                BigDecimal discountValue = productForm.getValue().multiply(productForm.getPercentageValue());
+                productForm.setDiscountValue(discountValue);
+            }
+        }
+    }
+
+    public Page<ProductView> findAllByCategoryId(Long categoryId, Pageable pageable, String productName, List<Boolean> show) {
         log.info(">> findAllByCategoryId [categoryId={}, pageable={}]", categoryId, pageable);
-        Page<Product> products = repository.findAllByCategoryIdAndNameStartsWithIgnoreCase(categoryId, productName, pageable);
+        Page<Product> products = repository.findAllByCategoryIdAndNameStartsWithIgnoreCaseAndExcludedIn(categoryId, productName, show, pageable);
         log.info("<< findAllByCategoryId [productsSize={}]", products.getContent().stream().count());
         List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
         return new PageImpl<>(view);
     }
 
-    public Page<ProductView> findAll(Pageable pageable, String productName) {
+    public Page<ProductView> findAll(Pageable pageable, String productName, List<Boolean> show) {
         log.info(">> findAll [productName={}, pageable={}]", productName, pageable);
-        Page<Product> products = repository.findAllByNameStartsWithIgnoreCase(productName, pageable);
+        Page<Product> products = repository.findAllByNameStartsWithIgnoreCaseAndExcludedIn(productName, show, pageable);
         log.info("<< findAll [productsSize={}]", products.getContent().stream().count());
         List<ProductView> view = products.getContent().stream().map(getConverter()::entityToView).collect(Collectors.toList());
         return new PageImpl<>(view);

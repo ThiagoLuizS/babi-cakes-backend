@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
@@ -26,7 +28,22 @@ public class CategoryController implements CategoryResource {
     }
 
     @Override
-    public Page<CategoryView> getAllByPage(Pageable pageable) {
-        return service.findByPage(pageable);
+    public Page<CategoryView> getAllByPage(List<Boolean> excluded, Pageable pageable) {
+        return service.findAll(pageable, excluded);
+    }
+
+    @Override
+    public Page<CategoryView> getAllFilterByPage(String categoryName, List<Boolean> excluded, Pageable pageable) {
+        return service.findAllFilter(pageable, categoryName, excluded);
+    }
+
+    @Override
+    public void inactivateCategory(Long id) {
+        service.hideCategory(id);
+    }
+
+    @Override
+    public void reactivateCategory(Long id) {
+        service.showCategory(id);
     }
 }

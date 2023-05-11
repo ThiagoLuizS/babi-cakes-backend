@@ -68,4 +68,7 @@ public class Product {
     @Column(name = "product_with_stock")
     private boolean withStock;
 
+    @Column(name = "product_excluded")
+    private boolean excluded;
+
 }

@@ -3,8 +3,11 @@ package br.com.babicakesbackend.models.mapper;
 import br.com.babicakesbackend.models.dto.UserForm;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.models.entity.User;
+import br.com.babicakesbackend.models.enumerators.UserOriginEnum;
 import br.com.babicakesbackend.util.ConstantUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm> {
@@ -30,6 +33,7 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .birthday(userForm.getBirthday())
                 .password(ConstantUtils.getSecurityHash(userForm.getPassword()))
                 .status(userForm.getStatus())
+                .origin(userForm.getOrigin())
                 .build();
     }
 

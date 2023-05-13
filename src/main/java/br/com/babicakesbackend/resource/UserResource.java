@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.resource;
 
 import br.com.babicakesbackend.models.dto.UserForm;
+import br.com.babicakesbackend.models.dto.UserFormGoogle;
 import br.com.babicakesbackend.models.dto.UserView;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -24,7 +25,16 @@ public interface UserResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    void save(@Valid @RequestBody UserForm userForm);
+    UserView save(@Valid @RequestBody UserForm userForm);
+
+    @PostMapping("/google")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Recurso responsavel por criar um novo usuário apartir da autenticação google")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    UserView saveGoogle(@Valid @RequestBody UserFormGoogle userForm);
 
     @GetMapping("/pageable")
     @ApiOperation(value = "Recurso responsavel por buscar os clientes/usuários")

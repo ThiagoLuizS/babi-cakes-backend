@@ -3,8 +3,10 @@ package br.com.babicakesbackend.service;
 import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.exception.NotFoundException;
 import br.com.babicakesbackend.models.dto.UserForm;
+import br.com.babicakesbackend.models.dto.UserFormGoogle;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.models.entity.User;
+import br.com.babicakesbackend.models.enumerators.UserOriginEnum;
 import br.com.babicakesbackend.models.enumerators.UserStatusEnum;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.models.mapper.UserMapperImpl;
@@ -12,6 +14,7 @@ import br.com.babicakesbackend.repository.UserRepository;
 import br.com.babicakesbackend.util.ConstantUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -45,28 +49,61 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
         return userMapper;
     }
 
-    public void saveCustom(UserForm userForm) {
+    public UserView saveCustom(UserForm userForm) {
         try {
             log.info(">> saveCustom [userEmail={}]", userForm.getEmail());
             Optional<User> user = userRepository.findByEmail(userForm.getEmail());
 
             if(user.isPresent()) {
-                throw new GlobalException("O email informado já está cadastrado");
+                return getConverter().entityToView(user.get());
             }
 
-            String phone = ConstantUtils.validPhone(userForm.getPhone());
-            userForm.setPhone(phone);
+            if(Objects.isNull(userForm.getOrigin()) || !Objects.equals(userForm.getOrigin(), UserOriginEnum.GOOGLE)) {
+                String phone = ConstantUtils.validPhone(userForm.getPhone());
+                userForm.setPhone(phone);
+            }
+
+            if(Objects.isNull(userForm.getOrigin())) {
+                userForm.setOrigin(UserOriginEnum.APP);
+            }
+
+            userForm.setStatus(UserStatusEnum.ACTIVE);
 
             ConstantUtils.validEmail(userForm.getEmail());
 ;
             User userConvert = userMapper.formToEntity(userForm);
 
-            userRepository.save(userConvert);
+            userConvert = userRepository.save(userConvert);
+
             log.info("<< saveCustom [userId={}]", userConvert.getId());
+
+            return getConverter().entityToView(userConvert);
+
         } catch (Exception e) {
             log.error("<< saveCustom [error={}]", e.getMessage());
-            throw new GlobalException(e.getMessage());
+            throw new GlobalException("Não foi possivel criar seu usuário");
         }
+    }
+
+    public UserView saveGoogleCustom(UserFormGoogle formGoogle) {
+
+        Optional<User> user = findByEmail(formGoogle.getEmail());
+
+        if(user.isPresent()) {
+            return getConverter().entityToView(user.get());
+        }
+
+        UserForm userForm = UserForm.builder()
+                .name(StringUtils.isEmpty(formGoogle.getName()) ? formGoogle.getEmail() : formGoogle.getName())
+                .email(formGoogle.getEmail())
+                .password(formGoogle.getPassword())
+                .origin(UserOriginEnum.GOOGLE).build();
+
+        return saveCustom(userForm);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override

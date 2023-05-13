@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.models.dto;
 
+import br.com.babicakesbackend.models.enumerators.UserOriginEnum;
 import br.com.babicakesbackend.models.enumerators.UserStatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,4 +36,6 @@ public class UserForm {
     private String phone;
     @JsonIgnore
     private UserStatusEnum status = UserStatusEnum.ACTIVE;
+    @JsonIgnore
+    private UserOriginEnum origin;
 }

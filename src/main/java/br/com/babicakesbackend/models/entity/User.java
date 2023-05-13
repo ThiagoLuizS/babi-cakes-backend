@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.models.entity;
 
+import br.com.babicakesbackend.models.enumerators.UserOriginEnum;
 import br.com.babicakesbackend.models.enumerators.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,6 +58,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_status")
     private UserStatusEnum status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_origin")
+    private UserOriginEnum origin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

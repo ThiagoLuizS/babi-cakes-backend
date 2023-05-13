@@ -1,6 +1,7 @@
 package br.com.babicakesbackend.controller;
 
 import br.com.babicakesbackend.models.dto.UserForm;
+import br.com.babicakesbackend.models.dto.UserFormGoogle;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.resource.UserResource;
 import br.com.babicakesbackend.service.UserService;
@@ -20,8 +21,13 @@ public class UserController implements UserResource {
     private final UserService service;
 
     @Override
-    public void save(UserForm userForm) {
-        service.saveCustom(userForm);
+    public UserView save(UserForm userForm) {
+        return service.saveCustom(userForm);
+    }
+
+    @Override
+    public UserView saveGoogle(UserFormGoogle userForm) {
+        return service.saveGoogleCustom(userForm);
     }
 
     @Override

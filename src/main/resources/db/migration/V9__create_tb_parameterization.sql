@@ -5,6 +5,8 @@ create table if not exists tb_parameterization
     param_pix_api_key     text,
     param_pix_client_key  text,
     param_pix_account_key text,
+    param_paypal_client_key text,
+    param_paypal_secret_key text,
     param_city_limit      text
 );
 

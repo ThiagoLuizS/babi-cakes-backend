@@ -2,6 +2,7 @@ package br.com.babicakesbackend.controller;
 
 import br.com.babicakesbackend.models.dto.UserForm;
 import br.com.babicakesbackend.models.dto.UserFormGoogle;
+import br.com.babicakesbackend.models.dto.UserSimpleForm;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.resource.UserResource;
 import br.com.babicakesbackend.service.UserService;
@@ -31,7 +32,17 @@ public class UserController implements UserResource {
     }
 
     @Override
+    public UserView update(UserSimpleForm userForm) {
+        return service.updateCustom(userForm);
+    }
+
+    @Override
     public Page<UserView> getAllByPage(Pageable pageable) {
         return service.findByPage(pageable);
+    }
+
+    @Override
+    public UserView getUserByEmail(String email) {
+        return service.getUserViewByEmail(email);
     }
 }

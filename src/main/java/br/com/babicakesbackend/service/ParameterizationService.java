@@ -7,6 +7,7 @@ import br.com.babicakesbackend.models.entity.Parameterization;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
 import br.com.babicakesbackend.models.mapper.ParameterizationMapperImpl;
 import br.com.babicakesbackend.repository.ParameterizationRepository;
+import br.com.babicakesbackend.util.ConstantUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -40,7 +41,8 @@ public class ParameterizationService extends AbstractService<Parameterization, P
 
     public Optional<Parameterization> getParametrization() {
 
-        List<Parameterization> params = repository.findAll();
+        List<Parameterization> params = repository.findAllByEnvironment(ConstantUtils.getEnvParameterization());
+
         if(CollectionUtils.isNotEmpty(params)) {
             return params.stream().findFirst();
         }

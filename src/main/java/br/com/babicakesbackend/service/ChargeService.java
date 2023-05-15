@@ -47,10 +47,14 @@ public class ChargeService {
     private final TemplatePixService pixService;
     private final AuthenticationService authenticationService;
 
+    private final UserService userService;
+
     public Charge createImmediateCharge(String authorization, Long budgetId) {
         try {
 
             BudgetView budgetView = budgetService.findBudgetByUserAndById(authorization, budgetId);
+
+            userService.validCompletedFormUserById(budgetView.getUser().getId());
 
             List<Charge> charges = chargeRepository.findByBudgetId(budgetView.getId());
 

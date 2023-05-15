@@ -1,9 +1,11 @@
 package br.com.babicakesbackend.util;
 
 import br.com.babicakesbackend.exception.GlobalException;
+import br.com.babicakesbackend.models.enumerators.ParameterizationEnvEnum;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.text.Normalizer;
@@ -23,6 +25,9 @@ public class ConstantUtils {
 
 	public static final String ROUTE_ID_v1 = "babicakes-getdata-v1";
 
+	@Value("${spring.profiles.active}")
+	private static String activeProfile;
+
 	public static String getSecurityHash(String text) {
 		return DigestUtils.sha256Hex(text);
 	}
@@ -35,6 +40,10 @@ public class ConstantUtils {
 			return phone;
 		}
 		throw new GlobalException("O telefone informado não é válido. Informe o DDD + número");
+	}
+
+	public static ParameterizationEnvEnum getEnvParameterization() {
+		return ParameterizationEnvEnum.getEnv(activeProfile);
 	}
 
 	public static String specialCharacterRemover(String string) {

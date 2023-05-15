@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.models.entity;
 
+import br.com.babicakesbackend.models.enumerators.ParameterizationEnvEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,6 +40,16 @@ public class Parameterization {
 
     @Column(name = "param_pix_client_key")
     private String clientKey;
+
+    @Column(name = "param_paypal_client_key")
+    private String paypalClientKey;
+
+    @Column(name = "param_paypal_secret_key")
+    private String paypalSecretKey;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "param_environment")
+    private ParameterizationEnvEnum environment;
 
     @Column(name = "param_city_limit")
     private String cityLimit;

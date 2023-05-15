@@ -19,6 +19,7 @@ public class UserMapperImpl implements MapStructMapper<User, UserView, UserForm>
                 .name(user.getName())
                 .phone(user.getPhone())
                 .email(user.getEmail())
+                .birthday(user.getBirthday())
                 .status(user.getStatus())
                 .build();
     }

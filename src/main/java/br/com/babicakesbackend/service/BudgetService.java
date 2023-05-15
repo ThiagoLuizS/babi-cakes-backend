@@ -289,10 +289,6 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         return new PageImpl<>(new ArrayList<>(views));
     }
 
-    public Page<Budget> findByBudgetStatusEnum(BudgetStatusEnum status, Pageable pageable) {
-        return repository.findByBudgetStatusEnum(status, pageable);
-    }
-
     public BudgetView findBudgetByUserAndById(String authorization, Long budgetId) {
         User user = authenticationService.getUser(authorization);
         log.info(">> findBudgetByCode [user={}, budgetId={}]", user.getEmail(), budgetId);

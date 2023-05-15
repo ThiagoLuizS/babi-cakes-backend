@@ -4,6 +4,7 @@ import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.exception.NotFoundException;
 import br.com.babicakesbackend.models.dto.UserForm;
 import br.com.babicakesbackend.models.dto.UserFormGoogle;
+import br.com.babicakesbackend.models.dto.UserSimpleForm;
 import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.models.entity.User;
 import br.com.babicakesbackend.models.enumerators.UserOriginEnum;
@@ -40,6 +41,8 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
     private final UserRepository userRepository;
     private final UserMapperImpl userMapper;
 
+//    private final AuthenticationService authenticationService;
+
     @Override
     protected JpaRepository<User, Long> getRepository() {
         return userRepository;
@@ -58,6 +61,8 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
                 return getConverter().entityToView(user.get());
             }
 
+            /**USUÁRIO QUE SE CADASTRAM PELO GOOGLE NÃO POSSUEM TELEFONE INICIALMENTE, ENTÃO ESSA CONDIÇÃO NÂO IMPEDE
+             * DE SEREM CADASTRADOS*/
             if(Objects.isNull(userForm.getOrigin()) || !Objects.equals(userForm.getOrigin(), UserOriginEnum.GOOGLE)) {
                 String phone = ConstantUtils.validPhone(userForm.getPhone());
                 userForm.setPhone(phone);
@@ -85,6 +90,36 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
         }
     }
 
+    public UserView updateCustom(UserSimpleForm userSimpleForm) {
+        try {
+            log.info(">> updateCustom [userSimpleForm={}]", userSimpleForm.getEmail());
+
+            Optional<User> user = userRepository.findByEmail(userSimpleForm.getEmail());
+
+            user.orElseThrow(() -> new GlobalException("Usuário não encontrado"));
+
+            String phone = ConstantUtils.validPhone(userSimpleForm.getPhone());
+
+            ConstantUtils.validEmail(userSimpleForm.getEmail());
+
+            User userConvert = user.get();
+
+            userConvert.setName(userSimpleForm.getName());
+            userConvert.setEmail(userSimpleForm.getEmail());
+            userConvert.setBirthday(userSimpleForm.getBirthday());
+            userConvert.setPhone(phone);
+
+            userConvert = userRepository.save(userConvert);
+
+            return getConverter().entityToView(userConvert);
+
+        } catch (Exception e) {
+            log.error("<< saveCustom [error={}]", e.getMessage());
+            throw new GlobalException("Não foi possivel atualizar seu usuário");
+        }
+
+    }
+
     public UserView saveGoogleCustom(UserFormGoogle formGoogle) {
 
         Optional<User> user = findByEmail(formGoogle.getEmail());
@@ -103,7 +138,22 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
     }
 
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return Optional.of(userRepository.findByEmail(email).orElseThrow(() -> new GlobalException("Usuário não encontrado"))) ;
+    }
+
+    public UserView getUserViewByEmail(String email) {
+        Optional<User> user = findByEmail(email);
+        return getConverter().entityToView(user.get());
+    }
+
+    public void validCompletedFormUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        user.orElseThrow(() -> new GlobalException("Usuário não encontrado"));
+
+        if(StringUtils.isBlank(user.get().getPhone())) {
+            throw new GlobalException("Complete seu cadastro, informe um telefone válido");
+        }
     }
 
     @Override

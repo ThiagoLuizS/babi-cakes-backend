@@ -138,7 +138,7 @@ public class UserService extends AbstractService<User, UserView, UserForm> imple
     }
 
     public Optional<User> findByEmail(String email) {
-        return Optional.of(userRepository.findByEmail(email).orElseThrow(() -> new GlobalException("Usuário não encontrado"))) ;
+        return userRepository.findByEmail(email);
     }
 
     public UserView getUserViewByEmail(String email) {

@@ -33,6 +33,11 @@ public class CategoryController implements CategoryResource {
     }
 
     @Override
+    public List<CategoryView> getAllCategoryAndFechProduct() {
+        return service.findAllCategoryAndFechProduct();
+    }
+
+    @Override
     public Page<CategoryView> getAllFilterByPage(String categoryName, List<Boolean> excluded, Pageable pageable) {
         return service.findAllFilter(pageable, categoryName, excluded);
     }

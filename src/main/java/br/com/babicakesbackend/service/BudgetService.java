@@ -67,7 +67,18 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
             User user = authenticationService.getUser(authorization);
 
-            Optional<Budget> budgetSave = repository.findTop1ByOrderByCodeDesc();
+            Long codeGenerator = ConstantUtils.generatedCode();
+
+            Optional<Budget> budgetSave = Optional.empty();
+
+            boolean existCode = true;
+
+            while (existCode) {
+                budgetSave = repository.findByCode(codeGenerator);
+                if(!budgetSave.isPresent()) {
+                    existCode = false;
+                }
+            }
 
             Optional<Address> address = addressService.findByUserAndAddressMainIsTrue(user);
 
@@ -76,7 +87,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
             }
 
             Budget budget = Budget.builder()
-                    .code(budgetSave.isPresent() ? budgetSave.get().getCode() + 1 : 1)
+                    .code(codeGenerator)
                     .user(user)
                     .budgetStatusEnum(BudgetStatusEnum.AWAITING_PAYMENT)
                     .dateCreateBudget(new Date())
@@ -124,9 +135,7 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
             repository.flush();
 
-            Optional<Budget> budgetOpt = repository.findByCode(budgetSaveNew.getCode());
-
-            return getConverter().entityToView(budgetOpt.get());
+            return getConverter().entityToView(budgetSaveNew);
 
         }catch (Exception e) {
             log.error(">> createNewBudget [error={}]", e.getMessage());
@@ -228,6 +237,8 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
                 .title(title)
                 .message(description)
                 .build(), budget.get().getUser().getId());
+
+
     }
 
     public void budgetIsOutForDelivery(Long budgetCode) {

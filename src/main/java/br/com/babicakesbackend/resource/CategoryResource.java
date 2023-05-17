@@ -41,6 +41,14 @@ public interface CategoryResource {
     })
     Page<CategoryView> getAllByPage(@RequestParam(name = "show", required = false) List<Boolean> show, Pageable pageable);
 
+    @GetMapping("/fetch-product")
+    @ApiOperation(value = "Recurso responsavel por buscar as categorias paginadas filtrando por exclusão")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
+    List<CategoryView> getAllCategoryAndFechProduct();
+
     @GetMapping("/pageable/filter")
     @ApiOperation(value = "Recurso responsavel por buscar as categorias paginadas filtrando por nome e exclusão")
     @ApiResponses(value = {

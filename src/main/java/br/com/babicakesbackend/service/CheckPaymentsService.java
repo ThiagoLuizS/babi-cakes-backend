@@ -36,6 +36,7 @@ public class CheckPaymentsService {
     @Value("${pageable.request.size}")
     private Integer pageSize;
 
+    @Transactional
     public void checkPaymentProcess() {
         log.info(">> ================ checkPaymentProcess ================");
         try {

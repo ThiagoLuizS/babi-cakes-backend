@@ -102,4 +102,8 @@ public class ConstantUtils {
 				.concat("-")
 				.concat(value.substring(13,23));
 	}
+
+	public static Long generatedCode() {
+		return new Random().nextLong(300000);
+	}
 }

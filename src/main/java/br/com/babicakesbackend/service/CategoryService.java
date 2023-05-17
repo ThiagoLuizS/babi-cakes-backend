@@ -10,7 +10,9 @@ import br.com.babicakesbackend.models.entity.Category;
 import br.com.babicakesbackend.models.entity.Product;
 import br.com.babicakesbackend.models.mapper.CategoryMapperImpl;
 import br.com.babicakesbackend.models.mapper.MapStructMapper;
+import br.com.babicakesbackend.models.mapper.ProductMapperImpl;
 import br.com.babicakesbackend.repository.CategoryRepository;
+import br.com.babicakesbackend.repository.ProductRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +39,10 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
     private final CategoryRepository repository;
     private final CategoryMapperImpl categoryMapper;
     private final CategoryFileService categoryFileService;
+
+    private final ProductRepository productRepository;
+
+    private final ProductMapperImpl productMapper;
 
     public CategoryView saveCustom(String categoryFormJson,  MultipartFile file) throws Exception {
         try {
@@ -86,6 +93,31 @@ public class CategoryService extends AbstractService<Category, CategoryView, Cat
         }
         log.info("<< findCategoryFormById [data={}]", category.get().getId());
         return categoryMapper.entityToForm(category.get());
+    }
+
+    public List<CategoryView> findAllCategoryAndFechProduct() {
+        List<Category> categoryList = repository.findAllByShow(true);
+        List<CategoryView> categoryViewList = categoryList.stream().map(item -> getConverter().entityToView(item))
+                .collect(Collectors.toList());
+
+        categoryViewList.stream().forEach(category -> {
+
+            Page<Product> productViews = productRepository.
+                    findAllByCategoryIdAndNameStartsWithIgnoreCaseAndExcludedIn(category.getId(),
+                            null,
+                            Arrays.asList(false),
+                            Pageable.ofSize(5));
+
+
+
+            if(!productViews.getContent().isEmpty()) {
+                List<ProductView> view = productViews.getContent().stream().map(item -> productMapper.entityToView(item))
+                        .collect(Collectors.toList());
+                category.setProductViews(view);
+            }
+        });
+
+        return categoryViewList;
     }
 
     public Page<CategoryView> findAll(Pageable pageable, List<Boolean> show) {

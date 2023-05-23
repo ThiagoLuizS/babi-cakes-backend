@@ -36,7 +36,19 @@ public class ParameterizationService extends AbstractService<Parameterization, P
             return freightCost;
         }
         log.info("<< findFreightCost [freightCost={}]", freightCost);
-        return BigDecimal.ZERO;
+        return freightCost;
+    }
+
+    public boolean findOpenShop() {
+        log.info(">> findOpenShop");
+        Optional<Parameterization> parameterization = getParametrization();
+        if(parameterization.isPresent()) {
+            boolean openShop = parameterization.get().isOpenShop();
+            log.info("<< findOpenShop [openShop={}]", openShop);
+            return openShop;
+        }
+        log.info("<< findOpenShop [openShop={}]", false);
+        return false;
     }
 
     public Optional<Parameterization> getParametrization() {
@@ -45,6 +57,18 @@ public class ParameterizationService extends AbstractService<Parameterization, P
 
         if(CollectionUtils.isNotEmpty(params)) {
             return params.stream().findFirst();
+        }
+
+        throw new GlobalException("Nenhuma parametrização do sistema foi encontrada");
+    }
+
+    public ParameterizationView getParametrizationView() {
+
+        List<Parameterization> params = repository.findAllByEnvironment(ConstantUtils.getEnvParameterization());
+
+        if(CollectionUtils.isNotEmpty(params)) {
+            Parameterization parameterization = params.stream().findFirst().get();
+            return getConverter().entityToView(parameterization);
         }
 
         throw new GlobalException("Nenhuma parametrização do sistema foi encontrada");

@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class BannerFileView {
     private Long id;
     private String name;
     private String type;
+    @JsonIgnore
     private byte[] photo;
     private String photoBase64ToString;
 

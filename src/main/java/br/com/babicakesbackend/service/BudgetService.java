@@ -63,6 +63,11 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
 
     public BudgetView createNewBudget(String authorization, String cupomCode, List<BudgetProductReservedForm> reservedForms) {
         try {
+
+            if(!parameterizationService.findOpenShop()) {
+                throw new GlobalException("Desculpe, estamos fechados. Abriremos em breve!");
+            }
+
             Optional<Cupom> cupom = Optional.empty();
 
             User user = authenticationService.getUser(authorization);

@@ -1,5 +1,6 @@
 package br.com.babicakesbackend.controller;
 
+import br.com.babicakesbackend.models.dto.ParameterizationView;
 import br.com.babicakesbackend.resource.ParameterizationResource;
 import br.com.babicakesbackend.service.ParameterizationService;
 import io.swagger.annotations.Api;
@@ -21,5 +22,15 @@ public class ParameterizationController implements ParameterizationResource {
     @Override
     public BigDecimal getFreightCost() {
         return service.findFreightCost();
+    }
+
+    @Override
+    public boolean getOpenShop() {
+        return service.findOpenShop();
+    }
+
+    @Override
+    public ParameterizationView getParameterizationView() {
+        return service.getParametrizationView();
     }
 }

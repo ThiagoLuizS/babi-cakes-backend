@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/babicakes?useTimezone=true&serverTimezone=UTC
-    username: usermysql
-    password: 123
+    url: jdbc:mysql://3.94.79.242:3306/babicakes?useTimezone=true&serverTimezone=UTC
+    username: thiago1
+    password: Yh{#{y~-f06iC[pjgNZp
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -11,8 +11,18 @@ spring:
       matching-strategy: ant_path_matcher
 
 server:
-  port: 8080
+  port: 8081
 
 value:
   url:
     pix: https://api.openpix.com.br/api/openpix/v1/
+
+camel:
+  component:
+    quartz2:
+      cron:
+        v1: cron:tab?schedule=0/30+*+*+*+*+?
+
+pageable:
+  request:
+    size: 150

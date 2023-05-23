@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 @Data
@@ -53,5 +54,8 @@ public class Parameterization {
 
     @Column(name = "param_city_limit")
     private String cityLimit;
+
+    @Column(name = "param_open_shop")
+    private boolean openShop;
 
 }

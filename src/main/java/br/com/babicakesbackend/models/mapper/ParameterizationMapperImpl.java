@@ -13,22 +13,35 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
         return ParameterizationView.builder()
                 .id(parameterization.getId())
                 .freightCost(parameterization.getFreightCost())
+                .openShop(parameterization.isOpenShop())
                 .build();
     }
 
     @Override
     public Parameterization formToEntity(ParameterizationForm parameterizationForm) {
-        return null;
+        return Parameterization.builder()
+                .id(parameterizationForm.getId())
+                .freightCost(parameterizationForm.getFreightCost())
+                .openShop(parameterizationForm.isOpenShop())
+                .build();
     }
 
     @Override
     public ParameterizationForm viewToForm(ParameterizationView parameterizationView) {
-        return null;
+        return ParameterizationForm.builder()
+                .id(parameterizationView.getId())
+                .freightCost(parameterizationView.getFreightCost())
+                .openShop(parameterizationView.isOpenShop())
+                .build();
     }
 
     @Override
     public ParameterizationForm entityToForm(Parameterization parameterization) {
-        return null;
+        return ParameterizationForm.builder()
+                .id(parameterization.getId())
+                .freightCost(parameterization.getFreightCost())
+                .openShop(parameterization.isOpenShop())
+                .build();
     }
 
     @Override

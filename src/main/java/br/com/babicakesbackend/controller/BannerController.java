@@ -26,6 +26,6 @@ public class BannerController implements BannerResource {
 
     @Override
     public List<BannerView> getAll() {
-        return service.findAll();
+        return service.findViewAll();
     }
 }

@@ -44,11 +44,18 @@ public abstract class AbstractService<T, View, Form> {
         return new PageImpl<>(view);
     }
 
-    public List<View> findAll() {
+    public List<View> findViewAll() {
         List<T> views = getRepository().findAll();
-        log.info("findAll [views={}]", views.stream().count());
+        log.info("findViewAll [views={}]", views.stream().count());
         return views.stream().map(getConverter()::entityToView).collect(Collectors.toList());
     }
+
+    public List<T> findEntityAll() {
+        List<T> entitys = getRepository().findAll();
+        log.info("findEntityAll [entitys={}]", entitys.stream().count());
+        return entitys;
+    }
+
 
     public View save(Form form) {
         try {

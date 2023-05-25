@@ -38,7 +38,7 @@ public interface EventResource {
     })
     void sendNewEventByUser(@RequestHeader("Authorization") String authorization, @Valid @RequestBody EventForm eventForm);
 
-    @PostMapping("/multicast-notification")
+    @PostMapping("/multicast-notification/users")
     @ResponseStatus(HttpStatus.CREATED)@ApiOperation(value = "Recurso responsavel por enviar notificação para todos os usuários")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),

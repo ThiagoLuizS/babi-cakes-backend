@@ -108,7 +108,7 @@ public class FirebaseService {
 
     @Async
     public void sendNotificationByUser(NotificationForm notificationForm, Long userId) {
-        sendMulticastNotificationByUser(notificationForm, "", userId);
+        sendMulticastNotificationByUser(notificationForm, userId);
     }
 
     private void sendMulticastData(Map<String, String> map) {
@@ -116,9 +116,9 @@ public class FirebaseService {
     }
 
     private void sendMulticastData(Map<String, String> map, User user) {
-        List<Device> devices = new ArrayList<>();
-        if(Objects.isNull(user)) {
-            devices = deviceService.findByUser(user);
+        List<Device> devices;
+        if(!Objects.isNull(user)) {
+            devices = deviceService.findByUserId(user.getId());
         } else {
             devices = deviceService.findEntityAll();
         }
@@ -135,7 +135,7 @@ public class FirebaseService {
         }
     }
 
-    private void sendMulticastNotificationByUser(NotificationForm notificationForm, String image, Long userId) {
+    private void sendMulticastNotificationByUser(NotificationForm notificationForm, Long userId) {
         Optional<User> user = userService.findEntityById(userId);
 
         if(!user.isPresent()) {
@@ -148,14 +148,14 @@ public class FirebaseService {
             throw new GlobalException("O usuário não tem nenhum dispositivo cadastrado");
         }
 
-        getExtractTokensAndSendNotification(notificationForm, image, devices);
+        getExtractTokensAndSendNotification(notificationForm, devices);
     }
 
-    private void getExtractTokensAndSendNotification(NotificationForm notificationForm, String image, List<Device> devices) {
+    private void getExtractTokensAndSendNotification(NotificationForm notificationForm, List<Device> devices) {
         List<String> tokens = devices.stream().map(Device::getToken).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty(devices)) {
             try {
-                MulticastMessage message = createNotification(notificationForm.getTitle(), notificationForm.getMessage(), image, tokens);
+                MulticastMessage message = createNotification(notificationForm.getTitle(), notificationForm.getMessage(), notificationForm.getImage(), tokens);
                 BatchResponse batch = sendMulticast(message);
 
                 registredOcurrenceUnregisteredTokens(batch, tokens, devices, notificationForm);
@@ -168,7 +168,7 @@ public class FirebaseService {
 
     private void sendMulticastNotification(NotificationForm notificationForm, String image) {
         List<Device> devices = deviceService.findEntityAll();
-        getExtractTokensAndSendNotification(notificationForm, image, devices);
+        getExtractTokensAndSendNotification(notificationForm, devices);
     }
 
     private void registredOcurrenceUnregisteredTokens(BatchResponse batch, List<String> tokens, List<Device> devices, NotificationForm notificationForm) {

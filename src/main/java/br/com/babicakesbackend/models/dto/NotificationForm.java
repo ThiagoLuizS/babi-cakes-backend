@@ -18,4 +18,5 @@ public class NotificationForm {
     private String title;
     @NotBlank(message = "Informe o corpo da mensagem")
     private String message;
+    private String image;
 }

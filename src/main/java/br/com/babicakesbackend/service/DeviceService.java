@@ -57,6 +57,10 @@ public class DeviceService extends AbstractService<Device, DeviceView, DeviceFor
         return repository.findByUser(user);
     }
 
+    public List<Device> findByUserId(Long userId) {
+        return repository.findByUserId(userId);
+    }
+
     public List<Device> findEntityAll() {
         return repository.findAll();
     }

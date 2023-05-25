@@ -35,12 +35,12 @@ public class EventController implements EventResource {
 
     @Override
     public void sendNewNotification(NotificationForm notificationForm) {
-        service.sendNotification(notificationForm);
+        eventService.sendNewNotificationAll(notificationForm);
     }
 
     @Override
     public void sendNewNotificationByUser(NotificationForm notificationForm, Long userId) {
-        service.sendNotificationByUser(notificationForm, userId);
+        eventService.sendNewNotificationByUser(notificationForm, userId);
     }
 
     @Override

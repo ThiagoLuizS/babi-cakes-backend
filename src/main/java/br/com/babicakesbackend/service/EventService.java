@@ -3,6 +3,8 @@ package br.com.babicakesbackend.service;
 import br.com.babicakesbackend.exception.GlobalException;
 import br.com.babicakesbackend.models.dto.EventForm;
 import br.com.babicakesbackend.models.dto.EventView;
+import br.com.babicakesbackend.models.dto.NotificationForm;
+import br.com.babicakesbackend.models.dto.UserView;
 import br.com.babicakesbackend.models.entity.Address;
 import br.com.babicakesbackend.models.entity.Event;
 import br.com.babicakesbackend.models.entity.User;
@@ -29,6 +31,8 @@ public class EventService extends AbstractService<Event, EventView, EventForm> {
     private final EventRepository repository;
     private final EventMapperImpl eventMapper;
     private final AuthenticationService authenticationService;
+    private final FirebaseService firebaseService;
+    private final UserService userService;
 
     public void saveCustom(Event event) {
         try {
@@ -72,6 +76,43 @@ public class EventService extends AbstractService<Event, EventView, EventForm> {
         Integer countEvent = repository.countByDeviceUserAndVisualizedIsFalse(user);
         log.info("<< countByDeviceUserAndVisualizedIsFalse [countEventNoVizualized={}]", countEvent);
         return countEvent;
+    }
+
+    public void sendNewNotificationByUser(NotificationForm notificationForm, Long userId) {
+
+        Optional<User> user = userService.findEntityById(userId);
+
+        if(user.isPresent()) {
+            firebaseService.sendNewEventByUser(EventForm.builder()
+                    .title(notificationForm.getTitle())
+                    .message(notificationForm.getMessage())
+                    .image(notificationForm.getImage())
+                    .build(), user.get());
+            firebaseService.sendNotificationByUser(notificationForm, user.get().getId());
+        } else {
+            throw new GlobalException("Usuário não existe");
+        }
+
+    }
+
+    public void sendNewNotificationAll(NotificationForm notificationForm) {
+
+        List<User> users = userService.findEntityAll();
+
+        users.parallelStream().forEach(user -> {
+            firebaseService.sendNewEventByUser(EventForm.builder()
+                    .title(notificationForm.getTitle())
+                    .message(notificationForm.getMessage())
+                    .image(notificationForm.getImage())
+                    .build(), user);
+
+            firebaseService.sendNotificationByUser(NotificationForm.builder()
+                    .title(notificationForm.getTitle())
+                    .message(notificationForm.getMessage())
+                    .image(notificationForm.getImage())
+                    .build(), user.getId());
+        });
+
     }
 
     @Override

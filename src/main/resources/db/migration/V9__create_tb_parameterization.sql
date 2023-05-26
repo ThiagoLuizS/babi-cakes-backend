@@ -9,7 +9,8 @@ create table if not exists tb_parameterization
     param_paypal_secret_key text,
     param_environment       varchar(30) not null,
     param_city_limit        text,
-    param_open_shop         boolean default false
+    param_open_shop         boolean default false,
+    param_link_whatsapp     text
 );
 
 insert into tb_parameterization(id_param,
@@ -21,7 +22,8 @@ insert into tb_parameterization(id_param,
                                 param_paypal_secret_key,
                                 param_environment,
                                 param_city_limit,
-                                param_open_shop)
+                                param_open_shop,
+                                param_link_whatsapp)
 values (1,
         4.00,
         'Q2xpZW50X0lkXzIzNGI1MjgyLTdkNGQtNGY5Zi1iODAzLWE3NTdiNjUyMmZhZjpDbGllbnRfU2VjcmV0X2JTdkVKL1ozQVBka1dyZndxeEVoalZ5dkFzWUlZVDIwUXpnTzhjTHdBQUk9',
@@ -31,5 +33,6 @@ values (1,
         'EOdC3pIePdszNUK4oNicabiQ1Z6Bw_mDHivce6OPfjEcRnpXFIrvv4JobH8NshDTrOST6Z76aZ3MkRIN',
         'HOMOLOGATION',
         'Bom Despacho',
-        true);
+        true,
+        'whatsapp://send?phone=+5531994303084');
 

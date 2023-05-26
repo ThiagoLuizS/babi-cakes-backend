@@ -14,6 +14,7 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
                 .id(parameterization.getId())
                 .freightCost(parameterization.getFreightCost())
                 .openShop(parameterization.isOpenShop())
+                .linkWhatsapp(parameterization.getLinkWhatsapp())
                 .build();
     }
 
@@ -23,6 +24,7 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
                 .id(parameterizationForm.getId())
                 .freightCost(parameterizationForm.getFreightCost())
                 .openShop(parameterizationForm.isOpenShop())
+                .linkWhatsapp(parameterizationForm.getLinkWhatsapp())
                 .build();
     }
 
@@ -32,6 +34,7 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
                 .id(parameterizationView.getId())
                 .freightCost(parameterizationView.getFreightCost())
                 .openShop(parameterizationView.isOpenShop())
+                .linkWhatsapp(parameterizationView.getLinkWhatsapp())
                 .build();
     }
 
@@ -41,6 +44,7 @@ public class ParameterizationMapperImpl implements MapStructMapper<Parameterizat
                 .id(parameterization.getId())
                 .freightCost(parameterization.getFreightCost())
                 .openShop(parameterization.isOpenShop())
+                .linkWhatsapp(parameterization.getLinkWhatsapp())
                 .build();
     }
 

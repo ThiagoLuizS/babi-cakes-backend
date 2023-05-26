@@ -58,4 +58,7 @@ public class Parameterization {
     @Column(name = "param_open_shop")
     private boolean openShop;
 
+    @Column(name = "param_link_whatsapp")
+    private String linkWhatsapp;
+
 }

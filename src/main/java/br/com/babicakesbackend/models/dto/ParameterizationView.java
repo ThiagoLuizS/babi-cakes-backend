@@ -15,4 +15,5 @@ public class ParameterizationView {
     private Long id;
     private BigDecimal freightCost = BigDecimal.ZERO;
     private boolean openShop;
+    private String linkWhatsapp;
 }

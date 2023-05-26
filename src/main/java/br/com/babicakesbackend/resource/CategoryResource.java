@@ -55,7 +55,7 @@ public interface CategoryResource {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
-    Page<CategoryView> getAllFilterByPage(@RequestParam("categoryName") String categoryName,
+    Page<CategoryView> getAllFilterByPage(@RequestParam(name = "categoryName", required = false) String categoryName,
                                           @RequestParam(name = "show", required = false) List<Boolean> show, Pageable pageable);
 
     @PreAuthorize("hasAuthority('ADMIN')")

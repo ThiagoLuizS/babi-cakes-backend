@@ -24,7 +24,7 @@ public interface AddressResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Recurso responsavel por criar um novo endereço")
+    @ApiOperation(value = "Recurso responsavel por criar um novo endereço", nickname = "save")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
@@ -32,7 +32,7 @@ public interface AddressResource {
     void save(@RequestHeader(name = "Authorization") String authorization, @Valid @RequestBody AddressForm addressForm);
 
     @GetMapping("/cep/{cep}")
-    @ApiOperation(value = "Recurso responsavel por buscar endereço por cep")
+    @ApiOperation(value = "Recurso responsavel por buscar endereço por cep", nickname = "getAddressByCep")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
@@ -40,7 +40,7 @@ public interface AddressResource {
     AddressForm getAddressByCep(@PathVariable("cep") String cep);
 
     @GetMapping("/all")
-    @ApiOperation(value = "Recurso responsavel por buscar os endereços do usuário")
+    @ApiOperation(value = "Recurso responsavel por buscar os endereços do usuário", nickname = "getPageByUser")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
@@ -48,7 +48,7 @@ public interface AddressResource {
     Page<AddressView> getPageByUser(@RequestHeader(name = "Authorization") String authorization, Pageable pageable);
 
     @PutMapping("/main/{id}")
-    @ApiOperation(value = "Recurso responsavel por criar atualizar o endereço para o endereço principal")
+    @ApiOperation(value = "Recurso responsavel por criar atualizar o endereço para o endereço principal", nickname = "updateAddressMain")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
@@ -56,7 +56,7 @@ public interface AddressResource {
     void updateAddressMain(@RequestHeader(name = "Authorization") String authorization, @PathVariable("id") Long id);
 
     @GetMapping("/main")
-    @ApiOperation(value = "Recurso responsavel por buscar o endereço principal do usuário")
+    @ApiOperation(value = "Recurso responsavel por buscar o endereço principal do usuário", nickname = "getAddressByMain")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
@@ -65,6 +65,10 @@ public interface AddressResource {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Recurso responsavel por deletar o endereço pelo seu ID")
+    @ApiOperation(value = "Recurso responsavel por deletar o endereço pelo seu ID", nickname = "deleteById")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Atributos do corpo da requisição podem está vazios"),
+            @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
+    })
     void deleteById(@PathVariable("id") Long id);
 }

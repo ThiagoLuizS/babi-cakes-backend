@@ -73,7 +73,7 @@ public interface ProductResource {
     })
     Page<ProductView> getAllByPageAndCategory(Pageable pageable,
                                               @PathVariable(name = "categoryId") Long categoryId,
-                                              @RequestParam("productName") String productName,
+                                              @RequestParam(value = "productName", required = false) String productName,
                                               @RequestParam(name = "excluded", required = false) List<Boolean> excluded);
 
     @GetMapping("/pageable/all")
@@ -83,6 +83,6 @@ public interface ProductResource {
             @ApiResponse(code = 401, message = "Atributos de entreda/credenciais estão incorretos")
     })
     Page<ProductView> getAllByPage(Pageable pageable,
-                                   @RequestParam("productName") String productName,
+                                   @RequestParam(value = "productName", required = false) String productName,
                                    @RequestParam(name = "excluded", required = false) List<Boolean> excluded);
 }

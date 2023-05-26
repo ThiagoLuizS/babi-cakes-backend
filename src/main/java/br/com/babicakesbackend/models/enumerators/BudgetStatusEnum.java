@@ -21,6 +21,12 @@ public enum BudgetStatusEnum {
     BudgetStatusEnum(String status) {
         this.status = status;
     }
+    
+    public static List<PropertyStringDTO> getStatusList() {
+        return Arrays.stream(BudgetStatusEnum.values())
+                .map(st -> PropertyStringDTO.builder().type(st.name()).status(st.getStatus()).build())
+                .toList();
+    }
 
     public String getStatus() {
         return status;

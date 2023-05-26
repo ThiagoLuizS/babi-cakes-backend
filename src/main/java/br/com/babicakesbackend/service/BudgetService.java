@@ -6,6 +6,7 @@ import br.com.babicakesbackend.models.dto.BudgetProductReservedForm;
 import br.com.babicakesbackend.models.dto.BudgetView;
 import br.com.babicakesbackend.models.dto.EventForm;
 import br.com.babicakesbackend.models.dto.NotificationForm;
+import br.com.babicakesbackend.models.dto.PropertyStringDTO;
 import br.com.babicakesbackend.models.entity.Address;
 import br.com.babicakesbackend.models.entity.Budget;
 import br.com.babicakesbackend.models.entity.BudgetProductReserved;
@@ -29,14 +30,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -303,6 +310,43 @@ public class BudgetService extends AbstractService<Budget, BudgetView, BudgetFor
         List<BudgetView> views = getReservedByBudgetPage(page);
 
         return new PageImpl<>(new ArrayList<>(views));
+    }
+
+    public Page<BudgetView> findByPageAll(Long budgetCode,
+                                          Long userName,
+                                          BudgetStatusEnum budgetStatus,
+                                          Date startDate,
+                                          Date finalDate,
+                                          Pageable pageable) {
+        try {
+            log.info(">> findByPageAll [budgetCode={}, userName={}, budgetStatus={}, startDate={}, finalDate={}, pageable={}]",
+                    budgetCode, userName, budgetStatus, startDate, finalDate, pageable);
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            if(Objects.isNull(startDate)) {
+                startDate = simpleDateFormat.parse("0000-01-01");
+            }
+            if(Objects.isNull(finalDate)) {
+                finalDate = simpleDateFormat.parse("9999-12-31");
+            }
+
+            Page<Budget> page = repository.findByPageAll(budgetCode, userName, budgetStatus, startDate, finalDate, pageable);
+
+            log.info("<< findByPageAll [page size={}]", page.getSize());
+
+            List<BudgetView> views = getReservedByBudgetPage(page);
+
+            return new PageImpl<>(new ArrayList<>(views));
+        } catch (Exception e) {
+            log.error("<< findByPageAll [error={}]", e.getMessage());
+            throw new GlobalException("Ocorreu um erro! Não foi possivel buscar os pedidos.");
+        }
+
+    }
+
+    public List<PropertyStringDTO> findBudgetStatus() {
+        return BudgetStatusEnum.getStatusList();
     }
 
     public BudgetView findBudgetByUserAndById(String authorization, Long budgetId) {
